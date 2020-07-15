@@ -2,118 +2,68 @@
 
 namespace VCComponent\Laravel\Product\Products;
 
+use Illuminate\Support\Facades\Cache;
 use VCComponent\Laravel\Product\Entities\Product as EntitiesProduct;
-use VCComponent\Laravel\Product\Products\Contracts\Product as ContractsProduct;
+use VCComponent\Laravel\Product\Products\ProductQueryTrait;
 
-class Product implements ContractsProduct
+class Product
 {
+    use ProductQueryTrait;
 
-    const HOT = 1;
-    public function _contract()
-    {
-    }
+    protected $cache        = false;
+    protected $cacheMinutes = 60;
 
-    public function getModel()
+    public function __construct()
     {
         if (isset(config('product.models')['product'])) {
-            $model = config('product.models.product');
-            $query = new $model;
-            $query = $query::query();
+            $model        = config('product.models.product');
+            $this->entity = new $model;
         } else {
-            $model = new EntitiesProduct;
-            $query = $model::query();
+            $this->entity = new EntitiesProduct;
         }
 
-        return $query;
+        if (config('product.cache')['enabled'] === true) {
+            $this->cache     = true;
+            $this->timeCache = config('product.cache')['minutes'] ? config('product.cache')['minutes'] * 60 : $this->cacheMinutes * 60;
+        }
     }
 
-    public function getHotProducts($limit)
+    public function hotProducts($limit)
     {
-        $query = $this->getModel();
-        $query = $query->where('is_hot', self::HOT)->limit($limit)->get();
-        return $query;
+        if ($this->cache === true) {
+            if (Cache::has('hotProducts') && Cache::get('hotProducts')->count() !== 0) {
+                return Cache::get('hotProducts');
+            }
+            return Cache::remember('hotProducts', $this->timeCache, function () use ($limit) {
+                return $this->hotProductsQuery($limit);
+            });
+        }
+        return $this->hotProductsQuery($limit);
     }
 
-    public function where($column, $value)
+    public function relatedProducts($productId, $value)
     {
-        $query = $this->getModel();
-        $query = $query->where($column, $value)->get();
-
-        return $query;
+        if ($this->cache === true) {
+            if (Cache::has('relatedProducts') && Cache::get('relatedProducts')->count() !== 0) {
+                return Cache::get('relatedProducts');
+            }
+            return Cache::remember('relatedProducts', $this->timeCache, function () use ($productId, $value) {
+                return $this->relatedProductsQuery($productId, $value);
+            });
+        }
+        return $this->relatedProductsQuery($productId, $value);
     }
 
-    public function findOrFail($id)
+    public function getSaleProducts($value)
     {
-        $query = $this->getModel();
-        return $query->findOrFail($id);
-    }
-
-    public function toSql()
-    {
-        $query = $this->getModel();
-        return $query->toSql();
-    }
-
-    public function get()
-    {
-        $query = $this->getModel();
-        return $query->get();
-    }
-
-    public function paginate($perPage)
-    {
-        $query = $this->getModel();
-        return $query->paginate($perPage);
-    }
-
-    public function limit($value)
-    {
-        $query = $this->getModel();
-
-        return $query->limit($value);
-    }
-
-    public function orderBy($column, $direction = 'asc')
-    {
-        $query = $this->getModel();
-        return $query->orderBy($column, $direction);
-    }
-
-    public function with($relations)
-    {
-        $query = $this->getModel();
-        $query->with($relations);
-
-        return $this;
-    }
-
-    public function first()
-    {
-        $query = $this->getModel();
-        return $query->first();
-    }
-
-    public function create(array $attributes = [])
-    {
-        $query = $this->getModel();
-        return $query->create($attributes);
-    }
-
-    public function firstOrCreate(array $attributes, array $values = [])
-    {
-        $query = $this->getModel();
-        return $query->firstOrCreate($attributes, $values);
-    }
-
-    public function update(array $values)
-    {
-        $query = $this->getModel();
-        return $query->update($values);
-    }
-
-    public function delete()
-    {
-        $query = $this->getModel();
-        return $query->delete();
+        if ($this->cache === true) {
+            if (Cache::has('getSaleProducts') && Cache::get('getSaleProducts')->count() !== 0) {
+                return Cache::get('getSaleProducts');
+            }
+            return Cache::remember('getSaleProducts', $this->timeCache, function () use ($value) {
+                return $this->getSaleProductsQuery($value);
+            });
+        }
+        return $this->getSaleProductsQuery($value);
     }
 }

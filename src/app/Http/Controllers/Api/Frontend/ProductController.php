@@ -43,7 +43,7 @@ class ProductController extends ApiController
         $query = $this->entity;
 
         $query = $this->applyConstraintsFromRequest($query, $request);
-        $query = $this->applySearchFromRequest($query, ['name', 'description', 'price'], $request);
+        $query = $this->applySearchFromRequest($query, ['name', 'description', 'price'], $request, ['productMetas' => ['value']]);
         $query = $this->applyOrderByFromRequest($query, $request);
 
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
@@ -63,7 +63,7 @@ class ProductController extends ApiController
         $query = $this->entity;
 
         $query = $this->applyConstraintsFromRequest($query, $request);
-        $query = $this->applySearchFromRequest($query, ['name', 'description', 'price'], $request);
+        $query = $this->applySearchFromRequest($query, ['name', 'description', 'price'], $request, ['productMetas' => ['value']]);
         $query = $this->applyOrderByFromRequest($query, $request);
 
         $products = $query->get();
@@ -136,6 +136,8 @@ class ProductController extends ApiController
             }
         }
 
+        $this->addAttributes($request, $product);
+
         event(new ProductCreatedEvent($product));
 
         return $this->response->item($product, new $this->transformer);
@@ -174,6 +176,8 @@ class ProductController extends ApiController
             }
         }
 
+        $this->updateAttributes($request, $product);
+
         event(new ProductUpdatedEvent($product));
 
 
@@ -195,6 +199,7 @@ class ProductController extends ApiController
         }
 
         $this->repository->delete($id);
+        $this->deleteAttributes($id);
 
         event(new ProductDeletedEvent($product));
 

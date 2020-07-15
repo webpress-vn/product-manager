@@ -17,18 +17,16 @@ class ProductListViewModel extends BaseViewModel
 
     public function getDisplayDatetimeAttribute($item)
     {
-
         return Carbon::parse($item->created_at)->format('d-m-Y h:i:s A');
     }
 
-    public function getLimitDescription($limit = 30)
+    public function getLimitDescription($item, $limit = 30)
     {
-
-        return Str::limit($this->products->description, $limit);
+        return Str::limit($item->description, $limit);
     }
 
-    public function getLimitedName($limit = 10)
+    public function getLimitedName($item, $limit = 10)
     {
-        return Str::limit($this->products->name, $limit);
+        return Str::limit($item->title, $limit);
     }
 }

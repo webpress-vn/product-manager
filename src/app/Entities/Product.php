@@ -5,18 +5,21 @@ namespace VCComponent\Laravel\Product\Entities;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Cviebrock\EloquentSluggable\SluggableScopeHelpers;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use VCComponent\Laravel\Product\Contracts\ProductManagement;
 use VCComponent\Laravel\Product\Contracts\ProductSchema;
+use VCComponent\Laravel\Product\Entities\ProductAttribute;
 use VCComponent\Laravel\Product\Entities\ProductMeta;
 use VCComponent\Laravel\Product\Traits\ProductManagementTrait;
 use VCComponent\Laravel\Product\Traits\ProductSchemaTrait;
 use VCComponent\Laravel\Tag\Traits\HasTagsTraits;
+use VCComponent\Laravel\User\Traits\HasUserTrait;
 
 class Product extends Model implements Transformable, ProductSchema, ProductManagement
 {
-    use TransformableTrait, ProductSchemaTrait, ProductManagementTrait, Sluggable, SluggableScopeHelpers , HasTagsTraits;
+    use TransformableTrait, ProductSchemaTrait, ProductManagementTrait, Sluggable, SluggableScopeHelpers, HasTagsTraits, SoftDeletes, HasUserTrait;
 
     const STATUS_PENDING   = 0;
     const STATUS_PUBLISHED = 1;
@@ -42,7 +45,12 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
 
     public function schema()
     {
-        return [];
+        return [
+            'alt_image' => [
+                'type' => 'string',
+                'rule' => [],
+            ],
+        ];
     }
 
     public function sluggable()
@@ -59,8 +67,34 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         return $query->where('is_hot', self::HOT);
     }
 
-    public function productMeta()
+    public function productHasSale()
     {
-        return $this->hasOne(ProductMeta::class);
+        $price        = $this->price;
+        $origin_price = $this->original_price;
+
+        $percent_sale = null;
+        if ($price < $origin_price) {
+            $caculate     = (100 - ($price * 100 / $origin_price));
+            $integer_part = explode('.', $caculate);
+
+            if ($integer_part[0] <= 3) {
+                $percent_sale = "- " . number_format($origin_price - $price) . " đ";
+            } else {
+                $percent_sale = "- " . $integer_part[0] . " %";
+            }
+        }
+
+        return $percent_sale;
+    }
+
+    public function productPrice()
+    {
+        $price = $this->price;
+        return number_format($price);
+    }
+
+    public function attributesValue()
+    {
+        return $this->hasMany(ProductAttribute::class);
     }
 }

@@ -104,4 +104,33 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         return $result;
     }
 
+    public function restore($id)
+    {
+
+        $post = $this->model->where('id', $id)->restore();
+    }
+
+    public function bulkRestore($ids)
+    {
+
+        $post = $this->model->whereIn("id", $ids)->restore();
+    }
+    public function deleteTrash($id)
+    {
+
+        $post = $this->model->where("id", $id)->forceDelete();
+    }
+
+    public function forceDelete($id)
+    {
+
+        $post = $this->model->where("id", $id)->forceDelete();
+    }
+
+    public function bulkDeleteTrash($ids)
+    {
+
+        $post = $this->model->whereIn('id', $ids)->forceDelete();
+    }
+
 }

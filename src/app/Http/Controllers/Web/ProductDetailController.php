@@ -2,7 +2,6 @@
 
 namespace VCComponent\Laravel\Product\Http\Controllers\Web;
 
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use VCComponent\Laravel\Product\Contracts\ViewProductDetailControllerInterface;
@@ -32,7 +31,11 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
             $this->beforeQuery($request);
         }
 
-        $product = $this->entity->findBySlugOrFail($slug);
+        $product = $this->entity->where('slug', $slug)->with('attributesValue')->first();
+
+        if (!$product) {
+            return false;
+        }
 
         if (method_exists($this, 'afterQuery')) {
             $this->afterQuery($product, $request);

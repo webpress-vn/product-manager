@@ -26,5 +26,8 @@ return [
             'except'     => [],
         ],
     ],
-
+    'cache'           => [
+        'enabled' => true,
+        'minutes' => 1,
+    ],
 ];

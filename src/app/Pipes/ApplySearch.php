@@ -10,9 +10,8 @@ class ApplySearch implements Pipe
 {
     protected $request;
     protected $fields = [
-        'title',
-        'description',
-        'content',
+        'name',
+        'price',
     ];
 
     public function __construct(Request $request)

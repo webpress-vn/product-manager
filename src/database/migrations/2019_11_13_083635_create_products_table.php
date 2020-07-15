@@ -23,7 +23,7 @@ class CreateProductsTable extends Migration
             $table->string('brand')->nullable();
             $table->string('thumbnail')->nullable();
             $table->integer('order')->default(0);
-            $table->integer('status')->default(0);
+            $table->integer('status')->default(1);
             $table->text('description')->nullable();
             $table->integer('price')->default(0);
             $table->integer('original_price')->default(0);
@@ -32,6 +32,7 @@ class CreateProductsTable extends Migration
             $table->dateTime('published_date')->useCurrent();
             $table->string('sku')->unique()->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

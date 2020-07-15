@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductMetaTable extends Migration
+class ProductAttributesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateProductMetaTable extends Migration
      */
     public function up()
     {
-
-        Schema::create('product_meta', function (Blueprint $table) {
+        Schema::create('product_attributes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('product_id');
-            $table->string('key');
-            $table->longText('value')->nullable();
+            $table->unsignedBigInteger('value_id');
+            $table->integer('type');
+            $table->integer('price');
             $table->timestamps();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('value_id')->references('id')->on('attribute_values');
         });
     }
 
@@ -31,9 +32,6 @@ class CreateProductMetaTable extends Migration
      */
     public function down()
     {
-        Schema::table('product_meta', function (Blueprint $table) {
-            $table->dropForeign(['product_id']);
-        });
-        Schema::dropIfExists('product_meta');
+        Schema::dropIfExists('product_attributes');
     }
 }

@@ -30,14 +30,18 @@ class ProductValidator extends AbstractValidator
             'description' => [],
         ],
         ValidatorInterface::BULK_UPDATE_STATUS => [
-            'ids' => ['required'],
-            'status'   => ['required'],
+            'ids'    => ['required'],
+            'status' => ['required'],
         ],
         ValidatorInterface::UPDATE_STATUS_ITEM => [
             'status' => ['required'],
         ],
         "RULE_ADMIN_UPDATE_DATE"               => [
             'published_date' => ['required'],
+        ],
+        "RULE_IDS"                             => [
+            'ids'  => ['array', 'required'],
+            'ids*' => ['integer'],
         ],
     ];
 

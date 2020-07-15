@@ -7,7 +7,14 @@ use VCComponent\Laravel\Product\Contracts\ViewProductDetailControllerInterface;
 use VCComponent\Laravel\Product\Contracts\ViewProductListControllerInterface;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductDetailController as ViewProductDetailController;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductListController as ViewProductListController;
+use VCComponent\Laravel\Product\Products\Contracts\Product as ContractsProduct;
 use VCComponent\Laravel\Product\Products\Product;
+use VCComponent\Laravel\Product\Repositories\AttributeRepository;
+use VCComponent\Laravel\Product\Repositories\AttributeRepositoryEloquent;
+use VCComponent\Laravel\Product\Repositories\AttributeValueRepository;
+use VCComponent\Laravel\Product\Repositories\AttributeValueRepositoryEloquent;
+use VCComponent\Laravel\Product\Repositories\ProductAttributeRepository;
+use VCComponent\Laravel\Product\Repositories\ProductAttributeRepositoryEloquent;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Product\Repositories\ProductRepositoryEloquent;
 
@@ -23,7 +30,8 @@ class ProductServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
         $this->publishes([
-            __DIR__ . '/../../config/product.php' => config_path('product.php'),
+            __DIR__ . '/../../config/product.php'                                => config_path('product.php'),
+            __DIR__ . '/../../resources/scss/productAttributes/_attributes.scss' => base_path('/resources/sass/productAttributes/_attributes.scss'),
         ], 'config');
 
         $this->loadViewsFrom(__DIR__ . '/../../resources/views/', 'product-manager');
@@ -38,6 +46,9 @@ class ProductServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(ProductRepository::class, ProductRepositoryEloquent::class);
+        $this->app->bind(AttributeRepository::class, AttributeRepositoryEloquent::class);
+        $this->app->bind(AttributeValueRepository::class, AttributeValueRepositoryEloquent::class);
+        $this->app->bind(ProductAttributeRepository::class, ProductAttributeRepositoryEloquent::class);
         $this->registerControllers();
 
         $this->app->singleton('moduleProduct.product', function () {
