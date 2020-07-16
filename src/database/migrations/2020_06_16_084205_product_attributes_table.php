@@ -18,7 +18,7 @@ class ProductAttributesTable extends Migration
             $table->unsignedBigInteger('product_id');
             $table->unsignedBigInteger('value_id');
             $table->integer('type');
-            $table->integer('price');
+            $table->integer('price')->nullable();
             $table->timestamps();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->foreign('value_id')->references('id')->on('attribute_values');
