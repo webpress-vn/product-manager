@@ -15,11 +15,10 @@ use VCComponent\Laravel\Product\Entities\ProductMeta;
 use VCComponent\Laravel\Product\Traits\ProductManagementTrait;
 use VCComponent\Laravel\Product\Traits\ProductSchemaTrait;
 use VCComponent\Laravel\Tag\Traits\HasTagsTraits;
-use VCComponent\Laravel\User\Traits\HasUserTrait;
 
 class Product extends Model implements Transformable, ProductSchema, ProductManagement
 {
-    use TransformableTrait, ProductSchemaTrait, ProductManagementTrait, Sluggable, SluggableScopeHelpers, HasTagsTraits, SoftDeletes, HasUserTrait;
+    use TransformableTrait, ProductSchemaTrait, ProductManagementTrait, Sluggable, SluggableScopeHelpers, HasTagsTraits, SoftDeletes;
 
     const STATUS_PENDING   = 0;
     const STATUS_PUBLISHED = 1;

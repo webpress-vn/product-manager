@@ -23,4 +23,5 @@ trait HasProductTrait
     {
         return $this->hasOne(AttributeValue::class, 'id', 'value_id');
     }
+
 }

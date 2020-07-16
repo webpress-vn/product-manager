@@ -3,7 +3,6 @@
 namespace VCComponent\Laravel\Product\Http\Controllers\Api\Admin;
 
 use Illuminate\Http\Request;
-use VCComponent\Laravel\Language\Traits\HasLanguageTrait;
 use VCComponent\Laravel\Product\Repositories\AttributeRepository;
 use VCComponent\Laravel\Product\Transformers\AttributeTransformer;
 use VCComponent\Laravel\Product\Validators\AttributeValidator;
@@ -11,7 +10,6 @@ use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 
 class AttributeController extends ApiController
 {
-    use HasLanguageTrait;
     protected $repository;
     protected $validator;
 

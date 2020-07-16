@@ -22,7 +22,6 @@ class ProductTransformer extends TransformerAbstract
         'seoMeta',
         'tags',
         'attributesValue',
-        // 'productAttributes',
     ];
     public function __construct($includes = [])
     {
@@ -31,8 +30,7 @@ class ProductTransformer extends TransformerAbstract
 
     public function transform($model)
     {
-        $author_name = $this->getNameAuthor($model);
-        $transform   = [
+        $transform = [
             'id'             => (int) $model->id,
             'name'           => $model->name,
             'code'           => $model->code,
@@ -45,7 +43,7 @@ class ProductTransformer extends TransformerAbstract
             'quantity'       => $model->quantity,
             'sold_quantity'  => $model->sold_quantity,
             'is_hot'         => $model->is_hot,
-            'author'         => $author_name,
+            'author_id'      => $model->author_id,
             'published_date' => $model->published_date,
             'sku'            => $model->sku,
         ];
@@ -100,48 +98,4 @@ class ProductTransformer extends TransformerAbstract
     {
         return $this->collection($model->attributesValue, new ProductAttributeTransformer());
     }
-
-    protected function getNameAuthor($model)
-    {
-        $author = $model->user;
-        $name   = null;
-        if ($author != null) {
-            if ($author->first_name != null && $author->last_name != null) {
-                $name = $author->first_name . ' ' . $author->last_name;
-            } else if ($author->first_name != null || $author->last_name != null) {
-                $name = $author->first_name ? $author->first_name : $author->last_name;
-            } else {
-                $name = $author->username;
-            }
-        }
-        return $name;
-    }
-
-    // public function includeProductAttributes($model)
-    // {
-    //     $value_ids          = collect($model->attributesValue)->pluck('value_id');
-    //     $attributes_value   = AttributeValue::select('id', 'attribute_id', 'label', 'value')->whereIn('id', $value_ids)->get();
-    //     $attributes         = Attribute::select('name', 'id')->whereIn('id', $attributes_value->pluck('attribute_id')->unique())->get();
-    //     $attributes_product = $attributes_value->map(function ($value, $key) use ($attributes) {
-    //         $found = $attributes->search(function ($i) use ($value) {
-    //             return $i->id === $value->attribute_id;
-    //         });
-    //         if ($found !== false) {
-    //             return [$attributes->get($found)->name => $value];
-    //         } else {
-    //             return $value;
-    //         }
-    //     });
-    //     dd($attributes_product);
-    //     $result = $attributes_product->map(function ($value, $key) {
-    //         $item_key   = collect($value)->keys()->first();
-    //         $item_value = collect($value)->map(function ($vl, $ky) {
-    //             return ['id' => $vl['id'], 'label' => $vl['label'], 'value' => $vl['value']];
-    //         })->first();
-    //         return array_merge($item_value, ['attribute' => $item_key]);
-    //     })->groupBy( 'attribute');
-
-    //     // return response()->json(['data' => $result]);
-    //     return $this->item($result);
-    // }
 }

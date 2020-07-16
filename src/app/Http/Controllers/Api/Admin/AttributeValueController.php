@@ -4,7 +4,6 @@ namespace VCComponent\Laravel\Product\Http\Controllers\Api\Admin;
 
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use VCComponent\Laravel\Language\Traits\HasLanguageTrait;
 use VCComponent\Laravel\Product\Repositories\AttributeValueRepository;
 use VCComponent\Laravel\Product\Transformers\AttributeValueTransformer;
 use VCComponent\Laravel\Product\Validators\AttributeValueValidator;
@@ -12,7 +11,6 @@ use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 
 class AttributeValueController extends ApiController
 {
-    use HasLanguageTrait;
     protected $repository;
     protected $validator;
 
