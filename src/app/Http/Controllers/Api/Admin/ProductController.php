@@ -152,6 +152,8 @@ class ProductController extends ApiController
         $this->validator->isValid($data['default'], 'RULE_ADMIN_CREATE');
         $this->validator->isSchemaValid($data['schema'], $schema_rules);
 
+        $data['default']['author_id'] = $this->getAuthenticatedUser()->id;
+
         $product = $this->repository->create($data['default']);
         $product->save();
         if (count($no_rule_fields)) {

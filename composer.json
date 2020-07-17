@@ -24,7 +24,8 @@
         "maatwebsite/excel": "3.1.19",
         "webpress/view-model": "^0.0.5",
         "webpress/category-manager" : "^0.0.3",
-        "webpress/tag-manager" : "^0.0.3"
+        "webpress/tag-manager" : "^0.0.3",
+        "webpress/user-manager" : "^0.0.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.4",
