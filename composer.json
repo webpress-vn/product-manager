@@ -23,7 +23,7 @@
         "cviebrock/eloquent-sluggable": "7.0.1",
         "maatwebsite/excel": "3.1.19",
         "webpress/view-model": "^0.0.5",
-        "webpress/category-manager" : "^0.0.3",
+        "webpress/category-manager" : "^0.0.4",
         "webpress/tag-manager" : "^0.0.3",
         "webpress/user-manager" : "^0.0.4"
     },
