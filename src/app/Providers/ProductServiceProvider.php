@@ -2,9 +2,12 @@
 
 namespace VCComponent\Laravel\Product\Providers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use VCComponent\Laravel\Product\Contracts\ViewProductDetailControllerInterface;
 use VCComponent\Laravel\Product\Contracts\ViewProductListControllerInterface;
+use VCComponent\Laravel\Product\Entities\Attribute;
+use VCComponent\Laravel\Product\Entities\Product as BaseModel;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductDetailController as ViewProductDetailController;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductListController as ViewProductListController;
 use VCComponent\Laravel\Product\Products\Contracts\Product as ContractsProduct;
@@ -27,6 +30,18 @@ class ProductServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if (isset(config('product.models')['product'])) {
+            $model       = config('product.models.product');
+            $this->model = $model;
+        } else {
+            $this->model = BaseModel::class;
+        }
+
+        Relation::morphMap([
+            'products'   => $this->model,
+            'attributes' => Attribute::class,
+        ]);
+
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
 
         $this->publishes([
