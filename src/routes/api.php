@@ -12,7 +12,7 @@ $api   = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) {
     $api->group(['prefix' => config('product.namespace')], function ($api) {
         $api->group(['prefix' => 'admin'], function ($api) {
-
+            $api->get('products/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
             $api->delete('products/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
             $api->delete('products/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
             $api->delete('products/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
