@@ -30,6 +30,15 @@ class ProductServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+
+        $this->publishes([
+            __DIR__ . '/../../config/product.php'                                => config_path('product.php'),
+            __DIR__ . '/../../resources/scss/productAttributes/_attributes.scss' => base_path('/resources/sass/productAttributes/_attributes.scss'),
+        ], 'config');
+
+        $this->loadViewsFrom(__DIR__ . '/../../resources/views/', 'product-manager');
+
         if (isset(config('product.models')['product'])) {
             $model       = config('product.models.product');
             $this->model = $model;
@@ -41,15 +50,6 @@ class ProductServiceProvider extends ServiceProvider
             'products'   => $this->model,
             'attributes' => Attribute::class,
         ]);
-
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
-
-        $this->publishes([
-            __DIR__ . '/../../config/product.php'                                => config_path('product.php'),
-            __DIR__ . '/../../resources/scss/productAttributes/_attributes.scss' => base_path('/resources/sass/productAttributes/_attributes.scss'),
-        ], 'config');
-
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views/', 'product-manager');
 
     }
 

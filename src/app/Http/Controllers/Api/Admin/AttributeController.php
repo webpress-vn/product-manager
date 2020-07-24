@@ -30,8 +30,6 @@ class AttributeController extends ApiController
 
     public function index(Request $request)
     {
-        $this->getConfigLanguage($request);
-
         $query = $this->entity;
 
         $query = $this->applyConstraintsFromRequest($query, $request);

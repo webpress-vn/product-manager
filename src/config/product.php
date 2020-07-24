@@ -2,7 +2,7 @@
 
 return [
 
-    'namespace'       => env('PRODUCT_COMPONENT_NAMESPACE', ''),
+    'namespace'       => env('PRODUCT_COMPONENT_NAMESPACE', 'product-management'),
 
     'models'          => [
         'product' => VCComponent\Laravel\Product\Entities\Product::class,
@@ -27,7 +27,7 @@ return [
         ],
     ],
     'cache'           => [
-        'enabled' => false,
+        'enabled' => true,
         'minutes' => 1,
     ],
 ];

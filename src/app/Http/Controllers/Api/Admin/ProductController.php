@@ -7,13 +7,11 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
-use Maatwebsite\Excel\Facades\Excel;
 use VCComponent\Laravel\Product\Entities\UserProduct;
 use VCComponent\Laravel\Product\Events\ProductCreatedByAdminEvent;
 use VCComponent\Laravel\Product\Events\ProductDeletedEvent;
 use VCComponent\Laravel\Product\Events\ProductStockChangedByAdminEvent;
 use VCComponent\Laravel\Product\Events\ProductUpdatedByAdminEvent;
-use VCComponent\Laravel\Product\Exports\ProductExports;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Product\Traits\Helpers;
 use VCComponent\Laravel\Product\Transformers\ProductTransformer;
@@ -27,12 +25,11 @@ class ProductController extends ApiController
 {
     use Helpers;
 
-    public function __construct(ProductRepository $repository, ProductValidator $validator, ProductExports $exports, ProductAttributeValidator $attribute_validator)
+    public function __construct(ProductRepository $repository, ProductValidator $validator, ProductAttributeValidator $attribute_validator)
     {
         $this->repository          = $repository;
         $this->entity              = $repository->getEntity();
         $this->validator           = $validator;
-        $this->exports             = $exports;
         $this->attribute_validator = $attribute_validator;
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
@@ -76,7 +73,8 @@ class ProductController extends ApiController
         return $this->response->paginator($products, $transformer);
     }
 
-    function list(Request $request) {
+    function list(Request $request)
+    {
         $query = $this->entity;
 
         $query = $this->getFromDate($request, $query);
@@ -280,20 +278,6 @@ class ProductController extends ApiController
         $product->save();
 
         return $this->success();
-    }
-
-    public function exportExcel(Request $request)
-    {
-        $products = $this->entity;
-
-        $products = $this->getFromDate($request, $products);
-        $products = $this->getToDate($request, $products);
-        $products = $this->getStatus($request, $products);
-        $products = $products->get();
-
-        Excel::store(new $this->exports($products), 'products.xlsx', 'excel');
-
-        return Response()->download(public_path('exports/products.xlsx'));
     }
 
     public function changeDatetime(Request $request, $id)

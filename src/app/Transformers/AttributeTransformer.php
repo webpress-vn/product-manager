@@ -36,20 +36,4 @@ class AttributeTransformer extends TransformerAbstract
     {
         return $this->collection($model->attributeValue, new AttributeValueTransformer());
     }
-    public function includeTranslates($model)
-    {
-
-        $data       = $model->translates->groupBy('language_id');
-        $attributes = [];
-        foreach ($data as $d) {
-            $keyed = $d->mapWithKeys(function ($item) {
-                return [$item['field'] => $item['value']];
-            });
-
-            $keyed->put('id', $model->id);
-            array_push($attributes, $keyed);
-        }
-
-        return $this->collection($attributes[0], new AttributeTransformer());
-    }
 }

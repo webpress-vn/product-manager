@@ -1,3 +1,4 @@
+<section>
 @if($attributeType($attribute_value) === "color")
 <div class="custom-color">
     @foreach($attribute_value as $index => $value)
@@ -69,3 +70,4 @@
 @endforeach
 </div>
 @endif
+</section>

@@ -23,7 +23,6 @@ $api->version('v1', function ($api) {
             $api->put('products/trash/bulk/restores', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkRestore');
             $api->put('products/trash/{id}/restore', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@restore');
 
-            $api->get('products/export', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@exportExcel');
             $api->get('products/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@list');
             $api->put('products/status/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkUpdateStatus');
             $api->put('products/status/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateStatusItem');
