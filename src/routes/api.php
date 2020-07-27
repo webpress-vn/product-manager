@@ -57,7 +57,7 @@ $api->version('v1', function ($api) use ($productTypes) {
                     $api->get($productType . '/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@list');
                     $api->put($productType . '/status/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkUpdateStatus');
                     $api->put($productType . '/status/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateStatusItem');
-                    $api->resource('/sim', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController');
+                    $api->resource($productType, 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController');
                     $api->put($productType.'/{id}/date', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeDatetime');
                     $api->get($productType.'/{id}/stock', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@checkStock');
                     $api->put($productType.'/{id}/quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateQuantity');
