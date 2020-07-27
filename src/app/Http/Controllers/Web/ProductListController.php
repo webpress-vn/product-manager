@@ -34,6 +34,7 @@ class ProductListController extends Controller implements ViewProductListControl
             $this->beforeQuery($request);
         }
 
+        $type     = $this->getTypeProduct($request);
         $pipes    = $this->pipes();
         $products = $this->repository->getWithPagination($pipes);
 

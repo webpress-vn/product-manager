@@ -33,6 +33,7 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         'status',
         'price',
         'original_price',
+        'unit_price',
         'thumbnail',
         'quantity',
         'sold_quantity',

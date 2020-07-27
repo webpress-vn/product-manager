@@ -158,4 +158,28 @@ trait Helpers
 
         return $path_array;
     }
+
+    private function getTypeProduct($request)
+    {
+        if (config('product.models.product') !== null) {
+            $model_class = config('product.models.product');
+        } else {
+            $model_class = \VCComponent\Laravel\Product\Entities\Product::class;
+        }
+
+        $model         = new $model_class;
+        $productTypes  = $model->productTypes();
+        $path_items    = collect(explode('/', $request->path()));
+        $type          = 'products';
+
+        foreach ($productTypes as $value) {
+            foreach ($path_items as $item) {
+                if ($value === $item) {
+                    $type = $value;
+                }
+            }
+        }
+
+        return $type;
+    }
 }

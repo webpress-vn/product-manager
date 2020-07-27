@@ -28,6 +28,7 @@ class CreateProductsTable extends Migration
             $table->text('description')->nullable();
             $table->integer('price')->default(0);
             $table->integer('original_price')->default(0);
+            $table->string('unit_price')->default('đ');
             $table->tinyInteger('is_hot')->default(0);
             $table->unsignedBigInteger('author_id');
             $table->dateTime('published_date')->useCurrent();

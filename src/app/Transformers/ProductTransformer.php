@@ -40,6 +40,7 @@ class ProductTransformer extends TransformerAbstract
             'product_type'   => $model->product_type,
             'price'          => (int) $model->price,
             'original_price' => (int) $model->original_price,
+            'unit_price'     => $model->unit_price,
             'thumbnail'      => $model->thumbnail,
             'quantity'       => $model->quantity,
             'sold_quantity'  => $model->sold_quantity,
@@ -54,6 +55,7 @@ class ProductTransformer extends TransformerAbstract
                 $transform[$item['key']] = $item['value'];
             }
         }
+
         $transform['timestamps'] = [
             'created_at' => $model->created_at,
             'updated_at' => $model->updated_at,
