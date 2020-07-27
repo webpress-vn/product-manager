@@ -31,7 +31,8 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
             $this->beforeQuery($request);
         }
 
-        $product = $this->entity->where('slug', $slug)->with('attributesValue')->first();
+        $type    = $this->getTypeProduct($request);
+        $product = $this->entity->where(['slug' => $slug, 'product_type' => $type ])->with('attributesValue')->first();
 
         if (!$product) {
             return false;
@@ -43,8 +44,14 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
 
         $view_model = new $this->ViewModel($product);
 
-        $custom_view_data = $this->viewData($product, $request);
-        $data             = array_merge($custom_view_data, $view_model->toArray());
+        $custom_view_func_name = 'viewData' . ucwords($type);
+        if (method_exists($this, $custom_view_func_name)) {
+            $custom_view_data = $this->$custom_view_func_name($product, $request);
+        } else {
+            $custom_view_data = $this->viewData($product, $request);
+        }
+
+        $data = array_merge($custom_view_data, $view_model->toArray());
 
         if (method_exists($this, 'beforeView')) {
             $this->beforeView($data, $request);

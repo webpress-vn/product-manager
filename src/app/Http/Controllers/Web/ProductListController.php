@@ -36,10 +36,17 @@ class ProductListController extends Controller implements ViewProductListControl
 
         $type     = $this->getTypeProduct($request);
         $pipes    = $this->pipes();
-        $products = $this->repository->getWithPagination($pipes);
+        $products = $this->repository->getWithPagination($pipes, $type);
 
         if (method_exists($this, 'afterQuery')) {
             $this->afterQuery($products, $request);
+        }
+
+        $custom_view_func_name = 'viewData' . ucwords($type);
+        if (method_exists($this, $custom_view_func_name)) {
+            $custom_view_data = $this->$custom_view_func_name($products, $request);
+        } else {
+            $custom_view_data = $this->viewData($products, $request);
         }
 
         $view_model = new $this->ViewModel($products);

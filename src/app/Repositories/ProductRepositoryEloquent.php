@@ -45,7 +45,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function getWithPagination($filters)
+    public function getWithPagination($filters, $type)
     {
         $request = App::make(Request::class);
         $query   = $this->getEntity();
@@ -53,7 +53,8 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         $items = App::make(Pipeline::class)
             ->send($query)
             ->through($filters)
-            ->then(function ($content) use ($request) {
+            ->then(function ($content) use ($request, $type) {
+                $content  = $content->where('type', $type);
                 $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
                 $products = $content->paginate($per_page);
                 return $products;
