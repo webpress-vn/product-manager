@@ -581,4 +581,10 @@ class ProductController extends ApiController
         $productTypes = $this->entity->productTypes();
         return response()->json(['data' => $productTypes]);
     }
+    
+    public function getFieldMeta()
+    {
+        $fieldMeta = $this->entity->schema();
+        return response()->json(['data' => $fieldMeta]);
+    }
 }
