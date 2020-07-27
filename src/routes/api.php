@@ -14,7 +14,7 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) use ($productTypes) {
     $api->group(['prefix' => config('product.namespace')], function ($api) use ($productTypes) {
         $api->group(['prefix' => 'admin'], function ($api) use ($productTypes) {
-
+            $api->get('products/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
             $api->delete('products/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
             $api->delete('products/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
             $api->delete('products/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
@@ -44,6 +44,7 @@ $api->version('v1', function ($api) use ($productTypes) {
              $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
             if (count($productTypes)) {
                 foreach ($productTypes as $productType) {
+                    $api->get($productType.'/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
                     $api->delete($productType . '/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
                     $api->delete($productType . '/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
                     $api->delete($productType . '/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');

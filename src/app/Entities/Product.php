@@ -50,7 +50,7 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
             'alt_image' => [
                 'type' => 'string',
                 'rule' => [],
-            ],
+            ]
         ];
     }
 

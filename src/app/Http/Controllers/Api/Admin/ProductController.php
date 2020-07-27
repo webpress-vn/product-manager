@@ -100,8 +100,8 @@ class ProductController extends ApiController
 
     public function show(Request $request, $id)
     {
-        $query = $this->entity;
-        $query = $this->applyQueryScope($query, 'product_type', $this->productType);
+        $query   = $this->entity;
+        $query   = $this->applyQueryScope($query, 'product_type', $this->productType);
         $product = $query->whereId($id)->first();
 
         if (!$product) {

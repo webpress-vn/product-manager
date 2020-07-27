@@ -11,7 +11,7 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface ProductRepository extends RepositoryInterface
 {
-    public function getWithPagination($filters);
+    public function getWithPagination($filters, $type);
     public function getStock($query);
     public function getMaxId();
     public function getOutStock($query);
