@@ -37,6 +37,7 @@ class ProductTransformer extends TransformerAbstract
             'description'    => $model->description,
             'slug'           => $model->slug,
             'status'         => (int) $model->status,
+            'product_type'   => $model->product_type,
             'price'          => (int) $model->price,
             'original_price' => (int) $model->original_price,
             'thumbnail'      => $model->thumbnail,

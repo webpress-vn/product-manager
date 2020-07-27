@@ -39,6 +39,7 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         'is_hot',
         'author_id',
         'published_date',
+        'product_type',
         'sku',
     ];
 

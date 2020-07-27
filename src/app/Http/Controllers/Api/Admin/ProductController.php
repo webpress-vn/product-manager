@@ -18,19 +18,19 @@ use VCComponent\Laravel\Product\Transformers\ProductTransformer;
 use VCComponent\Laravel\Product\Validators\ProductAttributeValidator;
 use VCComponent\Laravel\Product\Validators\ProductValidator;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
-use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 
 class ProductController extends ApiController
 {
     use Helpers;
 
-    public function __construct(ProductRepository $repository, ProductValidator $validator, ProductAttributeValidator $attribute_validator)
+    public function __construct(ProductRepository $repository, ProductValidator $validator, ProductAttributeValidator $attribute_validator, Request $request)
     {
         $this->repository          = $repository;
         $this->entity              = $repository->getEntity();
         $this->validator           = $validator;
         $this->attribute_validator = $attribute_validator;
+        $this->productType         = $this->getProductTypesFromRequest($request);
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
             $this->middleware(
@@ -50,7 +50,7 @@ class ProductController extends ApiController
     {
 
         $query = $this->entity->with('productMetas');
-
+        $query = $this->applyQueryScope($query, 'product_type', $this->productType);
         $query = $this->getFromDate($request, $query);
         $query = $this->getToDate($request, $query);
         $query = $this->getStatus($request, $query);
@@ -73,10 +73,9 @@ class ProductController extends ApiController
         return $this->response->paginator($products, $transformer);
     }
 
-    function list(Request $request)
-    {
+    function list(Request $request) {
         $query = $this->entity;
-
+        $query = $this->applyQueryScope($query, 'product_type', $this->productType);
         $query = $this->getFromDate($request, $query);
         $query = $this->getToDate($request, $query);
         $query = $this->getStocks($request, $query);
@@ -101,10 +100,12 @@ class ProductController extends ApiController
 
     public function show(Request $request, $id)
     {
-        $product = $this->repository->whereId($id)->first();
+        $query = $this->entity;
+        $query = $this->applyQueryScope($query, 'product_type', $this->productType);
+        $product = $query->whereId($id)->first();
 
         if (!$product) {
-            throw new NotFoundException('Product');
+            throw new \Exception('Không tìm thấy '.$this->productType);
         }
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
@@ -150,7 +151,8 @@ class ProductController extends ApiController
         $this->validator->isValid($data['default'], 'RULE_ADMIN_CREATE');
         $this->validator->isSchemaValid($data['schema'], $schema_rules);
 
-        $data['default']['author_id'] = $this->getAuthenticatedUser()->id;
+        $data['default']['author_id']    = $this->getAuthenticatedUser()->id;
+        $data['default']['product_type'] = $this->productType;
 
         $product = $this->repository->create($data['default']);
         $product->save();
@@ -164,7 +166,7 @@ class ProductController extends ApiController
         }
         if (count($data['schema'])) {
             foreach ($data['schema'] as $key => $data) {
-                $value = (!$data) ? 'ảnh' : $data;
+                $value = (!$data) ? 'image' : $data;
                 $product->productMetas()->updateOrCreate([
                     'key' => $key,
                 ], [
@@ -184,7 +186,7 @@ class ProductController extends ApiController
     {
         $product = $this->entity->find($id);
         if (!$product) {
-            throw new NotFoundException('Product');
+            throw new \Exception('Không tìm thấy sản phẩm !');
         }
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
@@ -222,9 +224,9 @@ class ProductController extends ApiController
 
     public function destroy(Request $request, $id)
     {
-        $product = $this->entity->find($id);
+        $product = $this->repository->findWhere(['id' => $id, 'product_type' => $this->productType])->first();
         if (!$product) {
-            throw new NotFoundException('Product');
+            throw new \Exception('Không tìm thấy sản phẩm !');
         }
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
@@ -266,9 +268,9 @@ class ProductController extends ApiController
             }
         }
 
-        $product = $this->entity->find($id);
+        $product =  $this->repository->findWhere(['id' => $id, 'product_type' => $this->productType])->first();
         if (!$product) {
-            throw new NotFoundException('Product');
+            throw new \Exception('Không tìm thấy sản phẩm !');
         }
 
         $this->validator->isValid($request, 'UPDATE_STATUS_ITEM');
@@ -282,10 +284,10 @@ class ProductController extends ApiController
 
     public function changeDatetime(Request $request, $id)
     {
-        $product = $this->repository->where('id', $id)->first();
+        $product = $this->repository->where(['id' => $id, 'product_type' => $this->productType])->first();
 
         if (!$product) {
-            throw new NotFoundException('Product');
+            throw new \Exception('Không tìm thấy sản phẩm !');
         }
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
@@ -309,10 +311,10 @@ class ProductController extends ApiController
 
     public function checkStock($id)
     {
-        $product = $this->repository->find($id);
+        $product = $this->repository->findWhere(['id' => $id, 'product_type' => $this->productType])->first();
 
         if (!$product) {
-            throw new NotFoundException('Product');
+            throw new \Exception('Không tìm thấy sản phẩm !');
         }
 
         if ($product->quantity == 0) {
@@ -324,10 +326,10 @@ class ProductController extends ApiController
 
     public function changeQuantity(Request $request, $id)
     {
-        $product = $this->repository->find($id);
+        $product = $this->repository->findWhere(['id' => $id, 'product_type' => $this->productType])->first();
 
         if (!$product) {
-            throw new NotFoundException('Product');
+            throw new \Exception('Không tìm thấy sản phẩm !');
         }
 
         $request->validate([
@@ -345,10 +347,10 @@ class ProductController extends ApiController
 
     public function updateQuantity(Request $request, $id)
     {
-        $product = $this->repository->find($id);
+        $product = $this->repository->findWhere(['id' => $id, 'product_type' => $this->productType])->first();
 
         if (!$product) {
-            throw new NotFoundException('Product');
+            throw new \Exception('Không tìm thấy sản phẩm !');
         }
 
         $request->validate([
@@ -419,7 +421,7 @@ class ProductController extends ApiController
                 throw new Exception('The input status is incorrect');
             }
 
-            $query = $query->where('status', $request->status);
+            $query = $query->where(['status' => $request->status, 'product_type' => $this->productType ]);
         }
 
         return $query;
@@ -430,9 +432,9 @@ class ProductController extends ApiController
 
         if ($request->has('in_stock')) {
             if ($request->in_stock === "true") {
-                $query = $this->repository->getStock($query);
+                $query = $this->repository->where('product_type', $this->productType)->getStock($query);
             } elseif ($request->in_stock === "false") {
-                $query = $this->repository->getOutStock($query);
+                $query = $this->repository->where('product_type', $this->productType)->getOutStock($query);
             }
         }
 
@@ -459,7 +461,7 @@ class ProductController extends ApiController
             $user = UserProduct::where('user_id', $request['author_id'])->first();
 
             if (!$user) {
-                throw new NotFoundException('User');
+                throw new \Exception('Không tìm thấy User', 404);
             }
 
             $query = $query->where('id', $user->product_id);
@@ -475,16 +477,17 @@ class ProductController extends ApiController
         $ids      = $request->ids;
         $products = $this->entity::whereIn('id', $ids);
         if (count($ids) > $products->get()->count()) {
-            throw new NotFoundException("product");
+            throw new \Exception("Không tìm thấy sản phẩm !");
         }
         $products->delete();
         return $this->success();
     }
+
     public function restore($id)
     {
         $product = $this->entity::where('id', $id)->get();
         if (count($product) > 0) {
-            throw new NotFoundException('product');
+            throw new \Exception('Không tìm thấy sản phẩm');
         }
 
         $this->repository->restore($id);
@@ -500,7 +503,7 @@ class ProductController extends ApiController
         $products = $this->entity->onlyTrashed()->whereIn("id", $ids)->get();
 
         if (count($ids) > $products->count()) {
-            throw new NotFoundException("product");
+            throw new \Exception("Không tìm thấy sản phẩm !");
         }
 
         $product = $this->repository->bulkRestore($ids);
@@ -515,7 +518,7 @@ class ProductController extends ApiController
         $trash = $this->entity->onlyTrashed();
 
         if ($trash->first() == null) {
-            throw new NotFoundException("product");
+            throw new \Exception("Không tìm thấy sản phẩm !");
         }
 
         $products = $trash->get();
@@ -528,7 +531,7 @@ class ProductController extends ApiController
         $trash = $this->entity->onlyTrashed();
 
         if ($trash->first() == null) {
-            throw new NotFoundException("product");
+            throw new \Exception("Không tìm thấy sản phẩm !");
         }
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
         $product  = $trash->paginate($per_page);
@@ -554,7 +557,7 @@ class ProductController extends ApiController
         $ids      = $request->ids;
         $products = $this->entity->findWhereIn("id", $ids);
         if (count($ids) > $products->count()) {
-            throw new NotFoundException("product");
+            throw new \Exception("Không tìm thấy sản phẩm !");
         }
         $product = $this->repository->bulkDeleteTrash($ids);
         return $this->success();
@@ -565,16 +568,17 @@ class ProductController extends ApiController
 
         $product = $this->entity->where('id', $id)->first();
         if (!$product) {
-            throw new NotFoundException('product');
+            throw new \Exception('Không tìm thấy sản phẩm !');
         }
 
         $this->repository->forceDelete($id);
 
         return $this->success();
     }
-    public function getFieldMeta()
+
+    public function getType()
     {
-        $fieldMeta = $this->entity->schema();
-        return response()->json(['data' => $fieldMeta]);
+        $productTypes = $this->entity->productTypes();
+        return response()->json(['data' => $productTypes]);
     }
 }

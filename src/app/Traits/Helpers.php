@@ -110,4 +110,52 @@ trait Helpers
             throw new \Exception("Thuộc tính có id = {$value_exists[0]} không tồn tại", 1);
         }
     }
+
+    private function applyQueryScope($query, $field, $value)
+    {
+        $query = $query->where($field, $value);
+
+        return $query;
+    }
+
+    private function getProductTypesFromRequest(Request $request)
+    {
+        $path_items  = collect(explode('/', $request->path()));
+        $check_admin = $path_items->filter(function ($item) {
+            return $item === 'admin';
+        })->count();
+
+        if ($check_admin) {
+            if (config('post.namespace') === '') {
+                $path_items = $this->handlingPathArray($path_items, 3);
+            } else {
+                $path_items = $this->handlingPathArray($path_items, 4);
+            }
+        } else {
+            if (config('post.namespace') === '') {
+                $path_items = $this->handlingPathArray($path_items, 2);
+            } else {
+                $path_items = $this->handlingPathArray($path_items, 3);
+            }
+        }
+
+        $type = $path_items->last();
+
+        return $type;
+    }
+
+    private function handlingPathArray($path_array, $base)
+    {
+        switch ($path_array->count()) {
+            case $base + 1:
+                $path_array->pop();
+                break;
+            case $base + 2:
+                $path_array->pop();
+                $path_array->pop();
+                break;
+        }
+
+        return $path_array;
+    }
 }

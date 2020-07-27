@@ -1,2 +1,1 @@
-
-<h1>This is product detail (id = {{ $product->id }})</h1>
+<h4>Interface not found!</h4>

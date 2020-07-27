@@ -19,6 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('slug');
             $table->string('quantity');
             $table->string('sold_quantity')->default(0);
+            $table->string('product_type')->default('products');
             $table->string('code')->nullable();
             $table->string('brand')->nullable();
             $table->string('thumbnail')->nullable();

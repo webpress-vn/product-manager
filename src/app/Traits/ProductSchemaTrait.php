@@ -6,6 +6,10 @@ use VCComponent\Laravel\Product\Entities\ProductMeta;
 
 trait ProductSchemaTrait
 {
+    public function productTypes()
+    {
+        return ['sim','drugs'];
+    }
 
     public function productMetas()
     {
