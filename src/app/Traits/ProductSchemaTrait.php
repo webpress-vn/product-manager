@@ -8,7 +8,7 @@ trait ProductSchemaTrait
 {
     public function productTypes()
     {
-        return ['sim','drugs'];
+        return [];
     }
 
     public function productMetas()
