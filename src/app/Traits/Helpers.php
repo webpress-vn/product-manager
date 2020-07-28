@@ -126,13 +126,13 @@ trait Helpers
         })->count();
 
         if ($check_admin) {
-            if (config('post.namespace') === '') {
+            if (config('product.namespace') === '') {
                 $path_items = $this->handlingPathArray($path_items, 3);
             } else {
                 $path_items = $this->handlingPathArray($path_items, 4);
             }
         } else {
-            if (config('post.namespace') === '') {
+            if (config('product.namespace') === '') {
                 $path_items = $this->handlingPathArray($path_items, 2);
             } else {
                 $path_items = $this->handlingPathArray($path_items, 3);
