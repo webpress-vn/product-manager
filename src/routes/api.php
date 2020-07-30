@@ -41,8 +41,15 @@ $api->version('v1', function ($api) use ($productTypes) {
             $api->post('attribute-value/{id}/language', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\AttributeValueController@storeTranslateLanguage');
             $api->delete('attribute-value/{id}/language', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\AttributeValueController@destroyTranslateLanguage');
 
-             $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
+            $api->get('variants/list', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController@list');
+            $api->resource('variants', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController');
+
+
+            $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
+
+
             if (count($productTypes)) {
+
                 foreach ($productTypes as $productType) {
                     $api->get($productType.'/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
                     $api->delete($productType . '/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');

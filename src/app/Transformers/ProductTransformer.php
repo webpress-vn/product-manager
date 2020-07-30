@@ -23,6 +23,7 @@ class ProductTransformer extends TransformerAbstract
         'tags',
         'attributesValue',
     ];
+
     public function __construct($includes = [])
     {
         $this->setDefaultIncludes($includes);

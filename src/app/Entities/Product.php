@@ -91,7 +91,13 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
     public function productPrice()
     {
         $price = $this->price;
-        return number_format($price);
+        return number_format($price). $this->unit_price;
+    }
+
+    public function productOriginPrice()
+    {
+        $price = $this->original_price;
+        return number_format($price). $this->unit_price;
     }
 
     public function attributesValue()

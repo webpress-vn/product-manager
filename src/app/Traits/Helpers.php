@@ -5,7 +5,10 @@ namespace VCComponent\Laravel\Product\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VCComponent\Laravel\Product\Entities\AttributeValue;
+use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
+use VCComponent\Laravel\Product\Entities\Variant;
+use VCComponent\Laravel\Product\Validators\VariantValidator;
 
 trait Helpers
 {
@@ -167,10 +170,10 @@ trait Helpers
             $model_class = \VCComponent\Laravel\Product\Entities\Product::class;
         }
 
-        $model         = new $model_class;
-        $productTypes  = $model->productTypes();
-        $path_items    = collect(explode('/', $request->path()));
-        $type          = 'products';
+        $model        = new $model_class;
+        $productTypes = $model->productTypes();
+        $path_items   = collect(explode('/', $request->path()));
+        $type         = 'products';
 
         foreach ($productTypes as $value) {
             foreach ($path_items as $item) {
@@ -181,5 +184,66 @@ trait Helpers
         }
 
         return $type;
+    }
+
+    protected function addVariant(Request $request, $product)
+    {
+        if ($request->has('variants')) {
+
+            foreach ($request->get('variants') as $value) {
+                $validator = new VariantValidator;
+                $validator->isValid($value, 'RULE_ADMIN_CREATE_WITH');
+                $variant             = new Variant;
+                $variant->product_id = $product->id;
+                $variant->label      = $value['label'];
+                $variant->thumbnail  = array_key_exists('thumbnail', $value) ? $value['thumbnail'] : null;
+                $variant->type       = array_key_exists('type', $value) ? $value['type'] : null;
+                $variant->price      = array_key_exists('price', $value) ? $value['price'] : null;
+                $variant->save();
+
+                foreach ($value['variant_ids'] as $product_id) {
+                    $product = Product::find($product_id);
+                    if(!$product){
+                        throw new \Exception ("Lỗi thêm combo : Không tìm thấy sản phẩm !",1 );
+                    }
+                }
+
+                $variant->attachVariants($value['variant_ids']);
+            }
+
+
+        }
+    }
+
+    protected function updateVariant(Request $request, $product)
+    {
+        if ($request->has('variants')) {
+
+            foreach ($request->get('variants') as $value) {
+               $validator = new VariantValidator;
+               $validator->isValid($value, 'RULE_ADMIN_UPDATE_WITH');
+            }
+
+            $old_variant = Variant::where('product_id', $product->id)->delete();
+
+            foreach ($request->get('variants') as $value) {
+                $variant             = new Variant;
+                $variant->product_id = $product->id;
+                $variant->label      = $value['label'];
+                $variant->thumbnail  = array_key_exists('thumbnail', $value) ? $value['thumbnail'] : null;
+                $variant->type       = array_key_exists('type', $value) ? $value['type'] : null;
+                $variant->price      = array_key_exists('price', $value) ? $value['price'] : null;
+                $variant->save();
+
+                $product->attachVariants($value['variant_ids']);
+            }
+
+
+        }
+    }
+
+    protected function deleteVariant($id)
+    {
+        Variant::where('product_id', $id)->delete();
     }
 }

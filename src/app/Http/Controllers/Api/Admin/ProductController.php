@@ -155,7 +155,7 @@ class ProductController extends ApiController
         $data['default']['product_type'] = $this->productType;
 
         $product = $this->repository->create($data['default']);
-        $product->save();
+
         if (count($no_rule_fields)) {
             foreach ($no_rule_fields as $key => $value) {
                 $product->productMetas()->updateOrCreate([
@@ -176,6 +176,7 @@ class ProductController extends ApiController
         }
 
         $this->addAttributes($request, $product);
+        $this->addVariant($request, $product);
 
         event(new ProductCreatedByAdminEvent($product));
 
@@ -216,6 +217,7 @@ class ProductController extends ApiController
         }
 
         $this->updateAttributes($request, $product);
+        $this->updateVariant($request, $product);
 
         event(new ProductUpdatedByAdminEvent($product));
 
@@ -238,6 +240,7 @@ class ProductController extends ApiController
 
         $this->repository->delete($id);
         $this->deleteAttributes($id);
+        $this->deteleVariant($id);
 
         event(new ProductDeletedEvent($product));
 
