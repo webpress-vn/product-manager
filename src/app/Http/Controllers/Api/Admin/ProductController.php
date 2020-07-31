@@ -126,6 +126,8 @@ class ProductController extends ApiController
 
     public function store(Request $request)
     {
+	$user = null;
+
         if (config('product.auth_middleware.admin.middleware') !== '') {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToCreate($user)) {
@@ -151,7 +153,8 @@ class ProductController extends ApiController
         $this->validator->isValid($data['default'], 'RULE_ADMIN_CREATE');
         $this->validator->isSchemaValid($data['schema'], $schema_rules);
 
-        $data['default']['author_id']    = $this->getAuthenticatedUser()->id;
+        $data['default']['author_id']    = $user ? $user->id : $request->get(
+            'author_id');
         $data['default']['product_type'] = $this->productType;
 
         $product = $this->repository->create($data['default']);

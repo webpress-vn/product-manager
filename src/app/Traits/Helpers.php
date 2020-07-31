@@ -196,7 +196,7 @@ trait Helpers
                 $validator = new VariantValidator;
                 $validator->isValid($value, 'RULE_ADMIN_CREATE_WITH');
 
-                foreach ($value['product_ids'] as $product_id) {
+                foreach ($value['package_ids'] as $product_id) {
                     $product_exists = Product::find($product_id);
                     if(!$product_exists){
                         throw new \Exception ("Lỗi thêm combo : Không tìm thấy sản phẩm !",1 );
@@ -211,7 +211,7 @@ trait Helpers
                 $variant->price      = array_key_exists('price', $value) ? $value['price'] : null;
                 $variant->save();
 
-                foreach($value['product_ids'] as $product_vrt) {
+                foreach($value['package_ids'] as $product_vrt) {
                     $data = [
                         'variant_id'       => $variant->id,
                         'variantable_id'   => $product_vrt,
