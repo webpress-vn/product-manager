@@ -43,7 +43,7 @@ $api->version('v1', function ($api) use ($productTypes) {
 
             $api->get('variants/list', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController@list');
             $api->resource('variants', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController');
-
+            $api->put("/variant/{id}/status", "VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController@updateStatus");
 
             $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
 

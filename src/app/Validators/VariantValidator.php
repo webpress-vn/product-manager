@@ -18,12 +18,15 @@ class VariantValidator extends AbstractValidator
         'RULE_ADMIN_CREATE_WITH' => [
             'label'       => ['required'],
             'product_id'  => ['required'],
-            'variant_ids' => ['required'],
+            'product_ids' => ['required'],
         ],
         'RULE_ADMIN_UPDATE_WITH' => [
             'label'       => ['required'],
             'product_id'  => ['required'],
-            'variant_ids' => ['required'],
+            'product_ids' => ['required'],
+        ],
+        'UPDATE_STATUS_ITEM'     => [
+            'status' => ['required'],
         ],
     ];
 }

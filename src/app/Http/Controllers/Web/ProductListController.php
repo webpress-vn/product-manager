@@ -9,10 +9,13 @@ use VCComponent\Laravel\Product\Pipes\ApplyConstraints;
 use VCComponent\Laravel\Product\Pipes\ApplyOrderBy;
 use VCComponent\Laravel\Product\Pipes\ApplySearch;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
+use VCComponent\Laravel\Product\Traits\Helpers;
 use VCComponent\Laravel\Product\ViewModels\ProductList\ProductListViewModel;
 
 class ProductListController extends Controller implements ViewProductListControllerInterface
 {
+    use Helpers;
+
     protected $repository;
     protected $entity;
 

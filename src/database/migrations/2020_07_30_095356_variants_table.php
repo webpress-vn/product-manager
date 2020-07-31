@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -20,6 +20,7 @@ class VariantsTable extends Migration
             $table->integer('price')->nullable();
             $table->string('type')->nullable();
             $table->unsignedBigInteger('product_id');
+            $table->integer('status')->default(1);
             $table->timestamps();
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
         });

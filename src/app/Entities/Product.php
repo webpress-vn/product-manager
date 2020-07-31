@@ -12,6 +12,7 @@ use VCComponent\Laravel\Product\Contracts\ProductManagement;
 use VCComponent\Laravel\Product\Contracts\ProductSchema;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
 use VCComponent\Laravel\Product\Entities\ProductMeta;
+use VCComponent\Laravel\Product\Entities\Variant;
 use VCComponent\Laravel\Product\Traits\ProductManagementTrait;
 use VCComponent\Laravel\Product\Traits\ProductSchemaTrait;
 use VCComponent\Laravel\Tag\Traits\HasTagsTraits;
@@ -61,6 +62,11 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
                 'source' => 'name',
             ],
         ];
+    }
+
+    public function variants()
+    {
+        return $this->hasMany(Variant::class, 'product_id');
     }
 
     public function scopeHot($query)

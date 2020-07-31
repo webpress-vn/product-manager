@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class VariantablesTable extends Migration
+class VariantProductsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class VariantablesTable extends Migration
      */
     public function up()
     {
-        Schema::create('variantables', function (Blueprint $table) {
+        Schema::create('variant_products', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('variant_id');
             $table->integer('variantable_id');
@@ -30,6 +30,6 @@ class VariantablesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('variantables');
+        Schema::dropIfExists('variant_products');
     }
 }

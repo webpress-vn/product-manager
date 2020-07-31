@@ -101,4 +101,15 @@ class VariantController extends ApiController
         return $this->success();
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $this->validator->isValid($request, 'UPDATE_STATUS_ITEM');
+
+        $this->repository->findById($id);
+
+        $this->repository->updateStatus($request, $id);
+
+        return $this->success();
+    }
+
 }

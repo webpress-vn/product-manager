@@ -43,4 +43,11 @@ class VariantRepositoryEloquent extends BaseRepository implements VariantReposit
         }
         return $variant;
     }
+
+    public function updateStatus($request, $id)
+    {
+        $status         = $this->find($id);
+        $status->status = $request->input('status');
+        $status->save();
+    }
 }

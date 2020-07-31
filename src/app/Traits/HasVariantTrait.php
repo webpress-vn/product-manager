@@ -7,14 +7,8 @@ use VCComponent\Laravel\Product\Entities\Variant;
 
 trait HasVariantTrait
 {
-    public function variants()
+    public function variant()
     {
-        return $this->morphedByMany(Variant::class, 'variantable');
+        return $this->morphTo(Variant::class);
     }
-
-    public function attachVariants($variant_ids)
-    {
-        $this->variants()->attach($variant_ids);
-    }
-
 }

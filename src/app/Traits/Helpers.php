@@ -8,6 +8,7 @@ use VCComponent\Laravel\Product\Entities\AttributeValue;
 use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
 use VCComponent\Laravel\Product\Entities\Variant;
+use VCComponent\Laravel\Product\Entities\VariantProduct;
 use VCComponent\Laravel\Product\Validators\VariantValidator;
 
 trait Helpers
@@ -167,7 +168,7 @@ trait Helpers
         if (config('product.models.product') !== null) {
             $model_class = config('product.models.product');
         } else {
-            $model_class = \VCComponent\Laravel\Product\Entities\Product::class;
+            $model_class = Product::class;
         }
 
         $model        = new $model_class;
@@ -191,8 +192,17 @@ trait Helpers
         if ($request->has('variants')) {
 
             foreach ($request->get('variants') as $value) {
+
                 $validator = new VariantValidator;
                 $validator->isValid($value, 'RULE_ADMIN_CREATE_WITH');
+
+                foreach ($value['product_ids'] as $product_id) {
+                    $product_exists = Product::find($product_id);
+                    if(!$product_exists){
+                        throw new \Exception ("Lỗi thêm combo : Không tìm thấy sản phẩm !",1 );
+                    }
+                }
+
                 $variant             = new Variant;
                 $variant->product_id = $product->id;
                 $variant->label      = $value['label'];
@@ -201,14 +211,15 @@ trait Helpers
                 $variant->price      = array_key_exists('price', $value) ? $value['price'] : null;
                 $variant->save();
 
-                foreach ($value['variant_ids'] as $product_id) {
-                    $product = Product::find($product_id);
-                    if(!$product){
-                        throw new \Exception ("Lỗi thêm combo : Không tìm thấy sản phẩm !",1 );
-                    }
-                }
+                foreach($value['product_ids'] as $product_vrt) {
+                    $data = [
+                        'variant_id'       => $variant->id,
+                        'variantable_id'   => $product_vrt,
+                        'variantable_type' => 'products',
+                    ];
 
-                $variant->attachVariants($value['variant_ids']);
+                    VariantProduct::create($data);
+                }
             }
 
 
@@ -227,6 +238,13 @@ trait Helpers
             $old_variant = Variant::where('product_id', $product->id)->delete();
 
             foreach ($request->get('variants') as $value) {
+                foreach ($value['product_ids'] as $product_id) {
+                    $product_exists = Product::find($product_id);
+                    if(!$product_exists){
+                        throw new \Exception ("Lỗi thêm combo : Không tìm thấy sản phẩm !",1 );
+                    }
+                }
+
                 $variant             = new Variant;
                 $variant->product_id = $product->id;
                 $variant->label      = $value['label'];
@@ -235,7 +253,15 @@ trait Helpers
                 $variant->price      = array_key_exists('price', $value) ? $value['price'] : null;
                 $variant->save();
 
-                $product->attachVariants($value['variant_ids']);
+                foreach($value['product_ids'] as $product_vrt) {
+                    $data = [
+                        'variant_id'       => $variant->id,
+                        'variantable_id'   => $product_vrt,
+                        'variantable_type' => 'products',
+                    ];
+
+                    VariantProduct::create($data);
+                }
             }
 
 
