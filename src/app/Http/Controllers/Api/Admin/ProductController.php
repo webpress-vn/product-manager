@@ -126,7 +126,7 @@ class ProductController extends ApiController
 
     public function store(Request $request)
     {
-	$user = null;
+	    $user = null;
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
             $user = $this->getAuthenticatedUser();
@@ -243,7 +243,7 @@ class ProductController extends ApiController
 
         $this->repository->delete($id);
         $this->deleteAttributes($id);
-        $this->deteleVariant($id);
+        $this->deleteVariant($id);
 
         event(new ProductDeletedEvent($product));
 
@@ -590,7 +590,15 @@ class ProductController extends ApiController
 
     public function getFieldMeta()
     {
-        $fieldMeta = $this->entity->schema();
+        $type = $this->productType;
+        $key  = ucwords($type) . 'Schema';
+
+        if (method_exists($this->entity, $key)) {
+            $fieldMeta = $this->entity->$key();
+        } else {
+            $fieldMeta = $this->entity->schema();
+        }
+
         return response()->json(['data' => $fieldMeta]);
     }
 }

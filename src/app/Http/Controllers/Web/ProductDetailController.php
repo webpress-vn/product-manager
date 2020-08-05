@@ -60,7 +60,13 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
             $this->beforeView($data, $request);
         }
 
-        return view($this->view(), $data);
+        $key = 'view' . ucwords($type);
+
+        if (method_exists($this, $key)) {
+            return view($this->$key(), $data);
+        } else {
+            return view($this->view(), $data);
+        }
     }
 
     protected function view()
