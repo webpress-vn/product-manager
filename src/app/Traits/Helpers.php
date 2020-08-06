@@ -20,7 +20,15 @@ trait Helpers
         if (!$request->has('status')) {
             $request_data['status'] = 1;
         }
-        $schema = collect($entity->schema());
+
+        $type = $this->getProductTypesFromRequest($request);
+        $key  = ucwords($type) . 'Schema';
+
+        if (method_exists($entity, $key)) {
+            $schema =  collect($entity->$key());
+        } else {
+            $schema = collect($entity->schema());
+        }
 
         $request_data_keys = $request_data->keys();
         $schema_keys       = $schema->keys()->toArray();
