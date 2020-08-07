@@ -11,7 +11,6 @@ use Prettus\Repository\Traits\TransformableTrait;
 use VCComponent\Laravel\Product\Contracts\ProductManagement;
 use VCComponent\Laravel\Product\Contracts\ProductSchema;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
-use VCComponent\Laravel\Product\Entities\ProductMeta;
 use VCComponent\Laravel\Product\Entities\Variant;
 use VCComponent\Laravel\Product\Traits\ProductManagementTrait;
 use VCComponent\Laravel\Product\Traits\ProductSchemaTrait;
@@ -43,6 +42,7 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         'published_date',
         'product_type',
         'sku',
+        'order',
     ];
 
     public function schema()
@@ -51,7 +51,7 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
             'alt_image' => [
                 'type' => 'string',
                 'rule' => [],
-            ]
+            ],
         ];
     }
 

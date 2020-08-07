@@ -51,6 +51,7 @@ class ProductTransformer extends TransformerAbstract
             'author_id'      => $model->author_id,
             'published_date' => $model->published_date,
             'sku'            => $model->sku,
+            'order'          => $model->order,
         ];
 
         if ($model->productMetas->count()) {
