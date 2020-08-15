@@ -110,4 +110,9 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
     {
         return $this->hasMany(ProductAttribute::class);
     }
+
+    public function ableToUse($user)
+    {
+        return true;
+    }
 }

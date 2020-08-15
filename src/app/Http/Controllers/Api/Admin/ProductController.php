@@ -32,11 +32,15 @@ class ProductController extends ApiController
         $this->attribute_validator = $attribute_validator;
         $this->productType         = $this->getProductTypesFromRequest($request);
 
-        if (config('product.auth_middleware.admin.middleware') !== '') {
-            $this->middleware(
-                config('product.auth_middleware.admin.middleware'),
-                ['except' => config('product.auth_middleware.admin.except')]
-            );
+         if (!empty(config('product.auth_middleware.admin'))) {
+            $user = $this->getAuthenticatedUser();
+            if (!$this->entity->ableToUse($user)) {
+                throw new PermissionDeniedException();
+            }
+
+            foreach(config('product.auth_middleware.admin') as $middleware){
+                $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
+            }
         }
 
         if (isset(config('product.transformers')['product'])) {
