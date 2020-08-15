@@ -30,7 +30,7 @@ class ProductController extends ApiController
                 throw new PermissionDeniedException();
             }
 
-            foreach (config('product.auth_middleware.frontend') as $middleware) {
+            foreach(config('product.auth_middleware.frontend') as $middleware){
                 $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
             }
         }
@@ -261,4 +261,6 @@ class ProductController extends ApiController
 
         return $this->success();
     }
+
+
 }
