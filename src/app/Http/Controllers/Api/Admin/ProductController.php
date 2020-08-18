@@ -54,9 +54,9 @@ class ProductController extends ApiController
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
             $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToShow($user)) {
-                throw new PermissionDeniedException();
-            }
+            // if (!$this->entity->ableToShow($user)) {
+            //     throw new PermissionDeniedException();
+            // }
         }
 
         $this->validator->isValid($request, 'RULE_EXPORT');
