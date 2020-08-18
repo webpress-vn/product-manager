@@ -45,7 +45,7 @@ $api->version('v1', function ($api) use ($productTypes) {
             $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
             if (count($productTypes)) {
                 foreach ($productTypes as $productType) {
-                    $api->get($productType . '/export', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
+                    $api->get($productType . '/exports', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
                     $api->get($productType . '/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
                     $api->delete($productType . '/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
                     $api->delete($productType . '/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
