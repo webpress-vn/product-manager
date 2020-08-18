@@ -1,5 +1,4 @@
 <?php
-
 namespace VCComponent\Laravel\Product\Transformers;
 
 use App\Transformers\SeoMetaTransformer;
@@ -11,6 +10,7 @@ use VCComponent\Laravel\MediaManager\Transformers\MediaTransformer;
 use VCComponent\Laravel\Product\Entities\Attribute;
 use VCComponent\Laravel\Product\Entities\AttributeValue;
 use VCComponent\Laravel\Product\Transformers\ProductAttributeTransformer;
+use VCComponent\Laravel\Product\Transformers\VariantTransformer;
 use VCComponent\Laravel\Tag\Transformers\TagTransformer;
 
 class ProductTransformer extends TransformerAbstract
@@ -23,7 +23,9 @@ class ProductTransformer extends TransformerAbstract
         'seoMeta',
         'tags',
         'attributesValue',
+        'variants',
     ];
+
     public function __construct($includes = [])
     {
         $this->setDefaultIncludes($includes);
@@ -102,5 +104,10 @@ class ProductTransformer extends TransformerAbstract
     public function includeAttributesValue($model)
     {
         return $this->collection($model->attributesValue, new ProductAttributeTransformer());
+    }
+
+    public function includeVariants($model)
+    {
+        return $this->collection($model->variants, new VariantTransformer());
     }
 }
