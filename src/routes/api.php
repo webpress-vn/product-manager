@@ -15,6 +15,7 @@ $api->version('v1', function ($api) use ($productTypes) {
     $api->group(['prefix' => config('product.namespace')], function ($api) use ($productTypes) {
         $api->group(['prefix' => 'admin'], function ($api) use ($productTypes) {
             $api->get('products/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
+            $api->get('products/exports', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
             $api->delete('products/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
             $api->delete('products/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
             $api->delete('products/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
@@ -47,11 +48,11 @@ $api->version('v1', function ($api) use ($productTypes) {
 
             $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
 
-
             if (count($productTypes)) {
 
                 foreach ($productTypes as $productType) {
-                    $api->get($productType.'/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
+                    $api->get($productType . '/exports', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
+                    $api->get($productType . '/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
                     $api->delete($productType . '/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
                     $api->delete($productType . '/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
                     $api->delete($productType . '/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
@@ -66,11 +67,10 @@ $api->version('v1', function ($api) use ($productTypes) {
                     $api->put($productType . '/status/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkUpdateStatus');
                     $api->put($productType . '/status/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateStatusItem');
                     $api->resource($productType, 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController');
-                    $api->put($productType.'/{id}/date', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeDatetime');
-                    $api->get($productType.'/{id}/stock', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@checkStock');
-                    $api->put($productType.'/{id}/quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateQuantity');
-                    $api->put($productType.'/{id}/change_quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeQuantity');
-
+                    $api->put($productType . '/{id}/date', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeDatetime');
+                    $api->get($productType . '/{id}/stock', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@checkStock');
+                    $api->put($productType . '/{id}/quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateQuantity');
+                    $api->put($productType . '/{id}/change_quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeQuantity');
                 }
             }
         });
