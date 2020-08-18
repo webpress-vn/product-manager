@@ -43,6 +43,10 @@ class ProductValidator extends AbstractValidator
             'ids'  => ['array', 'required'],
             'ids*' => ['integer'],
         ],
+        'RULE_EXPORT'                         => [
+            'label'     => ['required'],
+            'extension' => ['required', 'regex:/(^xlsx$)|(^csv$)/'],
+        ],
     ];
 
     public function getSchemaRules($entity)
