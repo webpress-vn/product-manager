@@ -7,6 +7,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use VCComponent\Laravel\Export\Services\Export\Export;
+use Illuminate\Support\Facades\DB;
 use VCComponent\Laravel\Product\Entities\UserProduct;
 use VCComponent\Laravel\Product\Events\ProductCreatedByAdminEvent;
 use VCComponent\Laravel\Product\Events\ProductDeletedEvent;
@@ -49,7 +51,72 @@ class ProductController extends ApiController
             $this->transformer = ProductTransformer::class;
         }
     }
+    public function export(Request $request)
+    {
 
+        if (config('product.auth_middleware.admin.middleware') !== '') {
+            $user = $this->getAuthenticatedUser();
+            // if (!$this->entity->ableToShow($user)) {
+            //     throw new PermissionDeniedException();
+            // }
+        }
+
+        $this->validator->isValid($request, 'RULE_EXPORT');
+
+        $data     = $request->all();
+        $products = $this->getReportProducts($request);
+
+        $args = [
+            'data'      => $products,
+            'label'     =>  $request->label ? $data['label'] : 'products',
+            'extension' => $request->extension ? $data['extension'] : 'Xlsx',
+        ];
+        $export = new export($args);
+        $url = $export->export();
+
+        return $this->response->array(['url' => $url]);
+    }
+
+    private function getReportProducts(Request $request)
+    {
+
+        $fields = [
+            'products.name as `Tên sản phẩm`',
+            'products.quantity as `Số lượng`',
+            'products.sold_quantity as `Số lượng đã bán`',
+            'products.product_type as `Loại sản phẩm`',
+            'products.code as `Mã sản phẩm`',
+            'products.thumbnail as `Link ảnh`',
+            'products.order as `Thứ tự sắp xếp`',
+            'products.price as `Gía bán`',
+            'products.unit_price as `Đơn vị tính`',
+            'users.username as `Người tạo`',
+        ];
+        $fields = implode(', ', $fields);
+
+        $query = $this->entity;
+        $query         = $query->select(DB::raw($fields));
+        $query = $this->applyQueryScope($query, 'product_type', $this->productType);
+        $query = $this->getFromDate($request, $query);
+        $query = $this->getToDate($request, $query);
+        $query = $this->getStocks($request, $query);
+        $query = $this->getStatus($request, $query);
+
+        $query = $this->filterAuthor($request, $query);
+
+        $query = $this->applyConstraintsFromRequest($query, $request);
+        $query = $this->applySearchFromRequest($query, ['name', 'description', 'price'], $request, ['productMetas' => ['value']]);
+        // $query = $this->applyOrderByFromRequest($query, $request);
+
+        $query = $query->leftJoin('users', function ($join) {
+            $join->on('products.author_id', '=', 'users.id');
+        });
+
+
+        $products = $query->get()->toArray();;
+
+        return $products;
+    }
     public function index(Request $request)
     {
 

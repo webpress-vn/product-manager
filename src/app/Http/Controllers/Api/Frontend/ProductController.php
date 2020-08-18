@@ -261,6 +261,4 @@ class ProductController extends ApiController
 
         return $this->success();
     }
-
-
 }
