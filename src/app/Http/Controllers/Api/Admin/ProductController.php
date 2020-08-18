@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use VCComponent\Laravel\Export\Services\Export\Export;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use VCComponent\Laravel\Product\Entities\UserProduct;
 use VCComponent\Laravel\Product\Events\ProductCreatedByAdminEvent;
@@ -66,11 +68,11 @@ class ProductController extends ApiController
 
         $args = [
             'data'      => $products,
-            'label'     => $request->label ? $data['label'] : 'products',
+            'label'     =>  $request->label ? $data['label'] : 'products',
             'extension' => $request->extension ? $data['extension'] : 'Xlsx',
         ];
-        $export = new Export($args);
-        $url    = $export->export();
+        $export = new export($args);
+        $url = $export->export();
 
         return $this->response->array(['url' => $url]);
     }
@@ -93,7 +95,7 @@ class ProductController extends ApiController
         $fields = implode(', ', $fields);
 
         $query = $this->entity;
-        $query = $query->select(DB::raw($fields));
+        $query         = $query->select(DB::raw($fields));
         $query = $this->applyQueryScope($query, 'product_type', $this->productType);
         $query = $this->getFromDate($request, $query);
         $query = $this->getToDate($request, $query);
@@ -110,10 +112,12 @@ class ProductController extends ApiController
             $join->on('products.author_id', '=', 'users.id');
         });
 
-        $products = $query->get()->toArray();
+
+        $products = $query->get()->toArray();;
 
         return $products;
     }
+
 
     public function index(Request $request)
     {
