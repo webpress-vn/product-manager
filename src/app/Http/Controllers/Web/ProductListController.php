@@ -9,13 +9,10 @@ use VCComponent\Laravel\Product\Pipes\ApplyConstraints;
 use VCComponent\Laravel\Product\Pipes\ApplyOrderBy;
 use VCComponent\Laravel\Product\Pipes\ApplySearch;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
-use VCComponent\Laravel\Product\Traits\Helpers;
 use VCComponent\Laravel\Product\ViewModels\ProductList\ProductListViewModel;
 
 class ProductListController extends Controller implements ViewProductListControllerInterface
 {
-    use Helpers;
-
     protected $repository;
     protected $entity;
 
@@ -61,13 +58,7 @@ class ProductListController extends Controller implements ViewProductListControl
             $this->beforeView($data, $request);
         }
 
-        $key = 'view' . ucwords($type);
-
-        if (method_exists($this, $key)) {
-            return view($this->$key(), $data);
-        } else {
-            return view($this->view(), $data);
-        }
+        return view($this->view(), $data);
     }
 
     protected function pipes()

@@ -14,6 +14,7 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) use ($productTypes) {
     $api->group(['prefix' => config('product.namespace')], function ($api) use ($productTypes) {
         $api->group(['prefix' => 'admin'], function ($api) use ($productTypes) {
+            $api->get('products/exports', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
             $api->get('products/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
             $api->delete('products/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
             $api->delete('products/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
@@ -41,17 +42,11 @@ $api->version('v1', function ($api) use ($productTypes) {
             $api->post('attribute-value/{id}/language', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\AttributeValueController@storeTranslateLanguage');
             $api->delete('attribute-value/{id}/language', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\AttributeValueController@destroyTranslateLanguage');
 
-            $api->get('variants/list', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController@list');
-            $api->resource('variants', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController');
-            $api->put("/variant/{id}/status", "VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController@updateStatus");
-
             $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
-
-
             if (count($productTypes)) {
-
                 foreach ($productTypes as $productType) {
-                    $api->get($productType.'/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
+                    $api->get($productType . '/export', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
+                    $api->get($productType . '/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
                     $api->delete($productType . '/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
                     $api->delete($productType . '/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
                     $api->delete($productType . '/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
@@ -66,11 +61,10 @@ $api->version('v1', function ($api) use ($productTypes) {
                     $api->put($productType . '/status/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkUpdateStatus');
                     $api->put($productType . '/status/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateStatusItem');
                     $api->resource($productType, 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController');
-                    $api->put($productType.'/{id}/date', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeDatetime');
-                    $api->get($productType.'/{id}/stock', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@checkStock');
-                    $api->put($productType.'/{id}/quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateQuantity');
-                    $api->put($productType.'/{id}/change_quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeQuantity');
-
+                    $api->put($productType . '/{id}/date', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeDatetime');
+                    $api->get($productType . '/{id}/stock', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@checkStock');
+                    $api->put($productType . '/{id}/quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateQuantity');
+                    $api->put($productType . '/{id}/change_quantity', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeQuantity');
                 }
             }
         });

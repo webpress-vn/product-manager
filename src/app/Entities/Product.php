@@ -11,7 +11,6 @@ use Prettus\Repository\Traits\TransformableTrait;
 use VCComponent\Laravel\Product\Contracts\ProductManagement;
 use VCComponent\Laravel\Product\Contracts\ProductSchema;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
-use VCComponent\Laravel\Product\Entities\Variant;
 use VCComponent\Laravel\Product\Traits\ProductManagementTrait;
 use VCComponent\Laravel\Product\Traits\ProductSchemaTrait;
 use VCComponent\Laravel\Tag\Traits\HasTagsTraits;
@@ -64,11 +63,6 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         ];
     }
 
-    public function variants()
-    {
-        return $this->hasMany(Variant::class, 'product_id');
-    }
-
     public function scopeHot($query)
     {
         return $query->where('is_hot', self::HOT);
@@ -97,22 +91,11 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
     public function productPrice()
     {
         $price = $this->price;
-        return number_format($price). $this->unit_price;
-    }
-
-    public function productOriginPrice()
-    {
-        $price = $this->original_price;
-        return number_format($price). $this->unit_price;
+        return number_format($price);
     }
 
     public function attributesValue()
     {
         return $this->hasMany(ProductAttribute::class);
-    }
-
-    public function ableToUse($user)
-    {
-        return true;
     }
 }

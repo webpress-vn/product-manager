@@ -6,13 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use VCComponent\Laravel\Product\Contracts\ViewProductDetailControllerInterface;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
-use VCComponent\Laravel\Product\Traits\Helpers;
 use VCComponent\Laravel\Product\ViewModels\ProductDetail\ProductDetailViewModel;
 
 class ProductDetailController extends Controller implements ViewProductDetailControllerInterface
 {
-    use Helpers;
-
     protected $repository;
     protected $entity;
 
@@ -60,13 +57,7 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
             $this->beforeView($data, $request);
         }
 
-        $key = 'view' . ucwords($type);
-
-        if (method_exists($this, $key)) {
-            return view($this->$key(), $data);
-        } else {
-            return view($this->view(), $data);
-        }
+        return view($this->view(), $data);
     }
 
     protected function view()

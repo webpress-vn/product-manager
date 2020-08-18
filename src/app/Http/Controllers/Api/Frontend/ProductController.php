@@ -24,15 +24,11 @@ class ProductController extends ApiController
         $this->entity = $repository->getEntity();
         $this->validator = $validator;
 
-        if (!empty(config('product.auth_middleware.frontend'))) {
-            $user = $this->getAuthenticatedUser();
-            if (!$this->entity->ableToUse($user)) {
-                throw new PermissionDeniedException();
-            }
-
-            foreach(config('product.auth_middleware.frontend') as $middleware){
-                $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
-            }
+        if (config('product.auth_middleware.admin.middleware') !== '') {
+            $this->middleware(
+                config('product.auth_middleware.admin.middleware'),
+                ['except' => config('product.auth_middleware.admin.except')]
+            );
         }
 
         if (isset(config('product.transformers')['product'])) {

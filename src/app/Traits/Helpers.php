@@ -5,11 +5,7 @@ namespace VCComponent\Laravel\Product\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VCComponent\Laravel\Product\Entities\AttributeValue;
-use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
-use VCComponent\Laravel\Product\Entities\Variant;
-use VCComponent\Laravel\Product\Entities\VariantProduct;
-use VCComponent\Laravel\Product\Validators\VariantValidator;
 
 trait Helpers
 {
@@ -20,8 +16,8 @@ trait Helpers
         if (!$request->has('status')) {
             $request_data['status'] = 1;
         }
-
         $type = $this->getProductTypesFromRequest($request);
+
         $key  = ucwords($type) . 'Schema';
 
         if (method_exists($entity, $key)) {
@@ -138,13 +134,13 @@ trait Helpers
         })->count();
 
         if ($check_admin) {
-            if (config('product.namespace') === '' || config('product.namespace') === null) {
+            if (config('post.namespace') === '') {
                 $path_items = $this->handlingPathArray($path_items, 3);
             } else {
                 $path_items = $this->handlingPathArray($path_items, 4);
             }
         } else {
-            if (config('product.namespace') === '' || config('product.namespace') === null) {
+            if (config('post.namespace') === '') {
                 $path_items = $this->handlingPathArray($path_items, 2);
             } else {
                 $path_items = $this->handlingPathArray($path_items, 3);
@@ -176,13 +172,13 @@ trait Helpers
         if (config('product.models.product') !== null) {
             $model_class = config('product.models.product');
         } else {
-            $model_class = Product::class;
+            $model_class = \VCComponent\Laravel\Product\Entities\Product::class;
         }
 
-        $model        = new $model_class;
-        $productTypes = $model->productTypes();
-        $path_items   = collect(explode('/', $request->path()));
-        $type         = 'products';
+        $model         = new $model_class;
+        $productTypes  = $model->productTypes();
+        $path_items    = collect(explode('/', $request->path()));
+        $type          = 'products';
 
         foreach ($productTypes as $value) {
             foreach ($path_items as $item) {
@@ -193,91 +189,5 @@ trait Helpers
         }
 
         return $type;
-    }
-
-    protected function addVariant(Request $request, $product)
-    {
-        if ($request->has('variants')) {
-
-            foreach ($request->get('variants') as $value) {
-
-                $validator = new VariantValidator;
-                $validator->isValid($value, 'RULE_ADMIN_CREATE_WITH');
-
-                foreach ($value['package_ids'] as $product_id) {
-                    $product_exists = Product::find($product_id);
-                    if(!$product_exists){
-                        throw new \Exception ("Lỗi thêm combo : Không tìm thấy sản phẩm !",1 );
-                    }
-                }
-
-                $variant             = new Variant;
-                $variant->product_id = $product->id;
-                $variant->label      = $value['label'];
-                $variant->thumbnail  = array_key_exists('thumbnail', $value) ? $value['thumbnail'] : null;
-                $variant->type       = array_key_exists('type', $value) ? $value['type'] : null;
-                $variant->price      = array_key_exists('price', $value) ? $value['price'] : null;
-                $variant->save();
-
-                foreach($value['package_ids'] as $product_vrt) {
-                    $data = [
-                        'variant_id'       => $variant->id,
-                        'variantable_id'   => $product_vrt,
-                        'variantable_type' => 'products',
-                    ];
-
-                    VariantProduct::create($data);
-                }
-            }
-
-
-        }
-    }
-
-    protected function updateVariant(Request $request, $product)
-    {
-        if ($request->has('variants')) {
-
-            foreach ($request->get('variants') as $value) {
-               $validator = new VariantValidator;
-               $validator->isValid($value, 'RULE_ADMIN_UPDATE_WITH');
-            }
-
-            $old_variant = Variant::where('product_id', $product->id)->delete();
-
-            foreach ($request->get('variants') as $value) {
-                foreach ($value['package_ids'] as $product_id) {
-                    $product_exists = Product::find($product_id);
-                    if(!$product_exists){
-                        throw new \Exception ("Lỗi thêm combo : Không tìm thấy sản phẩm !",1 );
-                    }
-                }
-
-                $variant             = new Variant;
-                $variant->product_id = $product->id;
-                $variant->label      = $value['label'];
-                $variant->thumbnail  = array_key_exists('thumbnail', $value) ? $value['thumbnail'] : null;
-                $variant->type       = array_key_exists('type', $value) ? $value['type'] : null;
-                $variant->price      = array_key_exists('price', $value) ? $value['price'] : null;
-                $variant->save();
-
-                foreach($value['package_ids'] as $product_vrt) {
-                    $data = [
-                        'variant_id'       => $variant->id,
-                        'variantable_id'   => $product_vrt,
-                        'variantable_type' => 'products',
-                    ];
-
-                    VariantProduct::create($data);
-                }
-            }
-
-
-        }
-    }
-
-    protected function deleteVariant($id)
-    {
-        Variant::where('product_id', $id)->delete();
     }
 }

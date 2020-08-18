@@ -8,7 +8,6 @@ use VCComponent\Laravel\Product\Contracts\ViewProductDetailControllerInterface;
 use VCComponent\Laravel\Product\Contracts\ViewProductListControllerInterface;
 use VCComponent\Laravel\Product\Entities\Attribute;
 use VCComponent\Laravel\Product\Entities\Product as BaseModel;
-use VCComponent\Laravel\Product\Entities\Variant;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductDetailController as ViewProductDetailController;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductListController as ViewProductListController;
 use VCComponent\Laravel\Product\Products\Contracts\Product as ContractsProduct;
@@ -21,8 +20,6 @@ use VCComponent\Laravel\Product\Repositories\ProductAttributeRepository;
 use VCComponent\Laravel\Product\Repositories\ProductAttributeRepositoryEloquent;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Product\Repositories\ProductRepositoryEloquent;
-use VCComponent\Laravel\Product\Repositories\VariantRepository;
-use VCComponent\Laravel\Product\Repositories\VariantRepositoryEloquent;
 
 class ProductServiceProvider extends ServiceProvider
 {
@@ -42,7 +39,17 @@ class ProductServiceProvider extends ServiceProvider
 
         $this->loadViewsFrom(__DIR__ . '/../../resources/views/', 'product-manager');
 
-        $this->bootEntityName();
+        if (isset(config('product.models')['product'])) {
+            $model       = config('product.models.product');
+            $this->model = $model;
+        } else {
+            $this->model = BaseModel::class;
+        }
+
+        Relation::morphMap([
+            'products'   => $this->model,
+            'attributes' => Attribute::class,
+        ]);
 
     }
 
@@ -57,7 +64,6 @@ class ProductServiceProvider extends ServiceProvider
         $this->app->bind(AttributeRepository::class, AttributeRepositoryEloquent::class);
         $this->app->bind(AttributeValueRepository::class, AttributeValueRepositoryEloquent::class);
         $this->app->bind(ProductAttributeRepository::class, ProductAttributeRepositoryEloquent::class);
-        $this->app->bind(VariantRepository::class, VariantRepositoryEloquent::class);
         $this->registerControllers();
 
         $this->app->singleton('moduleProduct.product', function () {
@@ -71,22 +77,6 @@ class ProductServiceProvider extends ServiceProvider
     {
         $this->app->bind(ViewProductListControllerInterface::class, ViewProductListController::class);
         $this->app->bind(ViewProductDetailControllerInterface::class, ViewProductDetailController::class);
-    }
-
-    private function bootEntityName()
-    {
-        if (isset(config('product.models')['product'])) {
-            $model       = config('product.models.product');
-            $this->model = $model;
-        } else {
-            $this->model = BaseModel::class;
-        }
-
-        Relation::morphMap([
-            'products'   => $this->model,
-            'attributes' => Attribute::class,
-            'variants'   => Variant::class,
-        ]);
     }
 
     public function provides()
