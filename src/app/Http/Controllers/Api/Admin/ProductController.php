@@ -146,9 +146,9 @@ class ProductController extends ApiController
     }
     public function whereHasCategory($request, $query)
     {
-        if ($request->categories) {
+        if ($request->category) {
             $query = $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('slug', $request->categories);
+                $q->where('id', $request->category);
             });
         }
         return $query;
