@@ -148,7 +148,7 @@ class ProductController extends ApiController
     {
         if ($request->category) {
             $query = $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('id', $request->category);
+                $q->where('slug', $request->category);
             });
         }
         return $query;
