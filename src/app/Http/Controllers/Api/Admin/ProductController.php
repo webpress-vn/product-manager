@@ -34,13 +34,13 @@ class ProductController extends ApiController
         $this->attribute_validator = $attribute_validator;
         $this->productType         = $this->getProductTypesFromRequest($request);
 
-         if (!empty(config('product.auth_middleware.admin'))) {
+        if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToUse($user)) {
                 throw new PermissionDeniedException();
             }
 
-            foreach(config('product.auth_middleware.admin') as $middleware){
+            foreach (config('product.auth_middleware.admin') as $middleware) {
                 $this->middleware($middleware['middleware'], ['except' => $middleware['except']]);
             }
         }
@@ -127,6 +127,7 @@ class ProductController extends ApiController
         $query = $this->getStatus($request, $query);
         $query = $this->getStocks($request, $query);
         $query = $this->filterAuthor($request, $query);
+        $query = $this->whereHasCategory($request, $query);
 
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['name', 'description', 'price'], $request, ['productMetas' => ['value']]);
@@ -143,14 +144,24 @@ class ProductController extends ApiController
 
         return $this->response->paginator($products, $transformer);
     }
-
-    function list(Request $request) {
+    public function whereHasCategory($request, $query)
+    {
+        if ($request->categories) {
+            $query = $query->whereHas('categories', function ($q) use ($request) {
+                $q->where('slug', $request->categories);
+            });
+        }
+        return $query;
+    }
+    function list(Request $request)
+    {
         $query = $this->entity;
         $query = $this->applyQueryScope($query, 'product_type', $this->productType);
         $query = $this->getFromDate($request, $query);
         $query = $this->getToDate($request, $query);
         $query = $this->getStocks($request, $query);
         $query = $this->getStatus($request, $query);
+        $query = $this->whereHasCategory($request, $query);
 
         $query = $this->filterAuthor($request, $query);
 
@@ -176,7 +187,7 @@ class ProductController extends ApiController
         $product = $query->whereId($id)->first();
 
         if (!$product) {
-            throw new \Exception('Không tìm thấy '.$this->productType);
+            throw new \Exception('Không tìm thấy ' . $this->productType);
         }
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
@@ -197,7 +208,7 @@ class ProductController extends ApiController
 
     public function store(Request $request)
     {
-	    $user = null;
+        $user = null;
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
             $user = $this->getAuthenticatedUser();
@@ -225,7 +236,8 @@ class ProductController extends ApiController
         $this->validator->isSchemaValid($data['schema'], $schema_rules);
 
         $data['default']['author_id']    = $user ? $user->id : $request->get(
-            'author_id');
+            'author_id'
+        );
         $data['default']['product_type'] = $this->productType;
 
         $product = $this->repository->create($data['default']);
@@ -498,7 +510,7 @@ class ProductController extends ApiController
                 throw new Exception('The input status is incorrect');
             }
 
-            $query = $query->where(['status' => $request->status, 'product_type' => $this->productType ]);
+            $query = $query->where(['status' => $request->status, 'product_type' => $this->productType]);
         }
 
         return $query;
