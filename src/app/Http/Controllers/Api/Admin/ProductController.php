@@ -467,11 +467,11 @@ class ProductController extends ApiController
     {
         if ($request->has('field')) {
             if ($request->field === 'updated') {
-                $field = 'updated_at';
+                $field = 'products.updated_at';
             } elseif ($request->field === 'published') {
-                $field = 'published_date';
+                $field = 'products.published_date';
             } elseif ($request->field === 'created') {
-                $field = 'created_at';
+                $field = 'products.created_at';
             }
             return $field;
         } else {
