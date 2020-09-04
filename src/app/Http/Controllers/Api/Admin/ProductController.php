@@ -644,7 +644,7 @@ class ProductController extends ApiController
     {
         $this->validator->isValid($request, 'RULE_IDS');
         $ids      = $request->ids;
-        $products = $this->entity->findWhereIn("id", $ids);
+        $products = $this->entity->whereIn("id", $ids);
         if (count($ids) > $products->count()) {
             throw new \Exception("Không tìm thấy sản phẩm !");
         }
