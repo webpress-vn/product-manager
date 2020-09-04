@@ -652,6 +652,7 @@ class ProductController extends ApiController
         return $this->success();
     }
 
+
     public function forceDelete($id)
     {
 
