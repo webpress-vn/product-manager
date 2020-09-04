@@ -101,6 +101,7 @@ class ProductController extends ApiController
         $query = $this->getToDate($request, $query);
         $query = $this->getStocks($request, $query);
         $query = $this->getStatus($request, $query);
+        $query = $this->whereHasCategory($request, $query);
 
         $query = $this->filterAuthor($request, $query);
 
