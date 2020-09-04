@@ -629,6 +629,18 @@ class ProductController extends ApiController
         return $this->response->paginator($product, new $this->transformer());
     }
 
+    public function forceBulkDelete(Request $request)
+    {
+        $this->validator->isValid($request, 'RULE_IDS');
+        $ids      = $request->ids;
+        $products = $this->entity->whereIn("id", $ids);
+        if (count($ids) > $products->get()->count()) {
+            throw new \Exception("Không tìm thấy sản phẩm !");
+        }
+        $product =  $products->forceDelete();
+        return $this->success();
+    }
+
     public function deleteAllTrash()
     {
         $products = $this->entity->onlyTrashed()->forceDelete();

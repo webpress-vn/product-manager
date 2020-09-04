@@ -18,6 +18,7 @@ $api->version('v1', function ($api) use ($productTypes) {
             $api->get('products/exports', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
             $api->delete('products/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
             $api->delete('products/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
+            $api->delete('products/force/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceBulkDelete');
             $api->delete('products/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
             $api->delete('products/trash/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDeleteTrash');
             $api->delete('products/trash/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteTrash');
@@ -53,6 +54,7 @@ $api->version('v1', function ($api) use ($productTypes) {
                 foreach ($productTypes as $productType) {
                     $api->get($productType . '/exports', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
                     $api->get($productType . '/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
+                    $api->delete($productType . '/force/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceBulkDelete');
                     $api->delete($productType . '/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
                     $api->delete($productType . '/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
                     $api->delete($productType . '/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
