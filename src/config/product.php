@@ -2,7 +2,7 @@
 
 return [
 
-    'namespace'       => env('PRODUCT_COMPONENT_NAMESPACE', 'product-management'),
+    'namespace'       => env('PRODUCT_COMPONENT_NAMESPACE', ''),
 
     'models'          => [
         'product' => VCComponent\Laravel\Product\Entities\Product::class,
