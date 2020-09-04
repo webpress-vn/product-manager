@@ -510,7 +510,7 @@ class ProductController extends ApiController
                 throw new Exception('The input status is incorrect');
             }
 
-            $query = $query->where(['status' => $request->status, 'product_type' => $this->productType]);
+            $query = $query->where(['products.status' => $request->status, 'product_type' => $this->productType]);
         }
 
         return $query;
