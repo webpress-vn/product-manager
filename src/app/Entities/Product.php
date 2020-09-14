@@ -43,6 +43,7 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         'product_type',
         'sku',
         'order',
+        'product_type_serial_number',
     ];
 
     public function schema()
@@ -97,13 +98,13 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
     public function productPrice()
     {
         $price = $this->price;
-        return number_format($price). $this->unit_price;
+        return number_format($price) . $this->unit_price;
     }
 
     public function productOriginPrice()
     {
         $price = $this->original_price;
-        return number_format($price). $this->unit_price;
+        return number_format($price) . $this->unit_price;
     }
 
     public function attributesValue()
