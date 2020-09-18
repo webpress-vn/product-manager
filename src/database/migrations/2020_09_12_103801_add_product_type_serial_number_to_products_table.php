@@ -26,6 +26,6 @@ class AddProductTypeSerialNumberToProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropColumn('product_type_serial_number');
     }
 }
