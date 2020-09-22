@@ -26,6 +26,8 @@ class AddProductTypeSerialNumberToProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropColumn('product_type_serial_number');
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn(['product_type_serial_number']);
+        });
     }
 }
