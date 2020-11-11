@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use VCComponent\Laravel\Export\Services\Export\Export;
 use Illuminate\Support\Facades\DB;
-use VCComponent\Laravel\Product\Entities\UserProduct;
 use VCComponent\Laravel\Product\Events\ProductCreatedByAdminEvent;
 use VCComponent\Laravel\Product\Events\ProductDeletedEvent;
 use VCComponent\Laravel\Product\Events\ProductStockChangedByAdminEvent;
@@ -543,22 +542,22 @@ class ProductController extends ApiController
         return $sku;
     }
 
-    public function filterAuthor($request, $query)
-    {
+    // public function filterAuthor($request, $query)
+    // {
 
-        if ($request->has('author_id')) {
+    //     if ($request->has('author_id')) {
 
-            $user = UserProduct::where('user_id', $request['author_id'])->first();
+    //         $user = UserProduct::where('user_id', $request['author_id'])->first();
 
-            if (!$user) {
-                throw new \Exception('Không tìm thấy User', 404);
-            }
+    //         if (!$user) {
+    //             throw new \Exception('Không tìm thấy User', 404);
+    //         }
 
-            $query = $query->where('id', $user->product_id);
-        }
+    //         $query = $query->where('id', $user->product_id);
+    //     }
 
-        return $query;
-    }
+    //     return $query;
+    // }
 
     public function bulkDelete(Request $request)
     {
