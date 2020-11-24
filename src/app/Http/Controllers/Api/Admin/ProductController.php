@@ -620,8 +620,10 @@ class ProductController extends ApiController
         $trash = $this->entity->onlyTrashed();
 
         if ($trash->first() == null) {
-            throw new \Exception("Không tìm thấy sản phẩm !");
+            // throw new \Exception("Không tìm thấy sản phẩm !");
+            $product = [];
         }
+        $trash = $this->applySearchFromRequest($trash, ['name', 'description', 'price'], $request);
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
         $product  = $trash->paginate($per_page);
 
