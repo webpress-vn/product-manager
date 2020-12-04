@@ -35,7 +35,7 @@ class ProductDetailController extends Controller implements ViewProductDetailCon
         }
 
         $type    = $this->getTypeProduct($request);
-        $product = $this->entity->where(['slug' => $slug, 'product_type' => $type ])->with('attributesValue')->first();
+        $product = $this->entity->where(['slug' => $slug, 'product_type' => $type, "status" => 1])->with('attributesValue')->firstOrFail();
 
         if (!$product) {
             return false;
