@@ -1,0 +1,15 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: trigger
+    image: plugins/downstream
+    settings:
+      server: https://drone.vicoders.com
+      token:
+        from_secret: DRONE_VICODERS_COM_SECRET
+      params:
+      - FOO=bar
+      repositories:
+        - vicoders-shared/laravel_core_theme_banhang
+
