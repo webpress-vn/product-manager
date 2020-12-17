@@ -14,22 +14,30 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', function ($api) use ($productTypes) {
     $api->group(['prefix' => config('product.namespace')], function ($api) use ($productTypes) {
         $api->group(['prefix' => 'admin'], function ($api) use ($productTypes) {
-            $api->get('products/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
+            $api->get('products/field-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
             $api->get('products/exports', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
             $api->delete('products/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
             $api->delete('products/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
             $api->delete('products/force/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceBulkDelete');
+
             $api->delete('products/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
             $api->delete('products/trash/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDeleteTrash');
             $api->delete('products/trash/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteTrash');
+
             $api->get('products/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getAllTrash');
+           
             $api->get('products/trash', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@trash');
+
             $api->put('products/trash/bulk/restores', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkRestore');
+           
             $api->put('products/trash/{id}/restore', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@restore');
 
             $api->get('products/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@list');
+
             $api->put('products/status/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkUpdateStatus');
-            $api->put('products/status/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateStatusItem');
+            
+            $api->put('product/{id}/status', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateStatusItem');
+
             $api->resource('products', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController');
             $api->put('product/{id}/date', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@changeDatetime');
             $api->get('product/{id}/stock', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@checkStock');
@@ -50,21 +58,21 @@ $api->version('v1', function ($api) use ($productTypes) {
             $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
 
             if (count($productTypes)) {
-
                 foreach ($productTypes as $productType) {
                     $api->get($productType . '/exports', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@export');
-                    $api->get($productType . '/filed-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
+                    $api->get($productType . '/field-meta', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getFieldMeta');
                     $api->delete($productType . '/force/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceBulkDelete');
                     $api->delete($productType . '/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDelete');
                     $api->delete($productType . '/{id}/force', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@forceDelete');
                     $api->delete($productType . '/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteAllTrash');
+
                     $api->delete($productType . '/trash/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkDeleteTrash');
                     $api->delete($productType . '/trash/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteTrash');
                     $api->get($productType . '/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getAllTrash');
+
                     $api->get($productType . '/trash', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@trash');
                     $api->put($productType . '/trash/bulk/restores', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkRestore');
                     $api->put($productType . '/trash/{id}/restore', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@restore');
-
                     $api->get($productType . '/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@list');
                     $api->put($productType . '/status/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkUpdateStatus');
                     $api->put($productType . '/status/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateStatusItem');
@@ -76,10 +84,9 @@ $api->version('v1', function ($api) use ($productTypes) {
                 }
             }
         });
-
         $api->get('products/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Frontend\ProductController@list');
         $api->put('products/status/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Frontend\ProductController@bulkUpdateStatus');
-        $api->put('products/{id}/status', 'VCComponent\Laravel\Product\Http\Controllers\Api\Frontend\ProductController@updateStatusItem');
+        $api->put('product/{id}/status', 'VCComponent\Laravel\Product\Http\Controllers\Api\Frontend\ProductController@updateStatusItem');
         $api->resource('products', 'VCComponent\Laravel\Product\Http\Controllers\Api\Frontend\ProductController');
 
         if (count($productTypes)) {

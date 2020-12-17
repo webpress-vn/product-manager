@@ -53,7 +53,6 @@ class ProductTransformer extends TransformerAbstract
             'published_date' => $model->published_date,
             'sku'            => $model->sku,
             'order'          => $model->order,
-            'product_type_serial_number' => $model->product_type_serial_number,
         ];
 
         if ($model->productMetas->count()) {
