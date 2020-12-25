@@ -94,13 +94,13 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
     {
 
         $data  = $request->all();
-        $products = $this->whereIn("id", $request->ids)->get();
+        $products = $this->model->whereIn("id", $request->ids)->get();
 
         if (count($request->ids) > $products->count()) {
             throw new NotFoundException("Products");
         }
 
-        $result = $this->whereIn("id", $request->ids)->update(['status' => $data['status']]);
+        $result = $this->model->whereIn("id", $request->ids)->update(['status' => $data['status']]);
 
         return $result;
     }
@@ -116,9 +116,9 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
         $products = $this->model->whereIn("id", $ids)->restore();
     }
+    
     public function deleteTrash($id)
     {
-
         $product = $this->model->where("id", $id)->forceDelete();
     }
 
