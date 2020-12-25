@@ -21,8 +21,8 @@ $factory->define(Product::class, function (Faker $faker) {
     ];
 });
 
-$factory->state(Product::class, 'testTypes', function () {
+$factory->state(Product::class, 'sim', function () {
     return [
-        'product_type' => 'testTypes',
+        'product_type' => 'sim',
     ];
 });

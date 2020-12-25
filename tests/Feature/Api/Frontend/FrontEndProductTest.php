@@ -7,7 +7,7 @@ use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product as TestEntity;
 use VCComponent\Laravel\Product\Test\TestCase;
 
-class ProductTest extends TestCase
+class FrontEndProductTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -122,7 +122,9 @@ class ProductTest extends TestCase
         ]);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function can_show_product_by_id_frontend_router()
     {
         $product = factory(Product::class)->create();
@@ -138,7 +140,9 @@ class ProductTest extends TestCase
         $this->assertDatabaseHas('products', $data);
     }
 
-    /** @test */
+    /**
+     * @test
+     */
     public function can_create_product_by_frondend_router()
     {
         $data = factory(Product::class)->make()->toArray();
