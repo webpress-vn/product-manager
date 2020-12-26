@@ -238,7 +238,7 @@ class AdminDeteleTrashTest extends TestCase
         }
     }
 
-       /**
+    /**
      * @test
      */
     public function can_delete_a_products_by_admin()

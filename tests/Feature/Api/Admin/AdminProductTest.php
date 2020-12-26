@@ -202,7 +202,7 @@ class AdminProductTest extends TestCase
 
         $data     = ['published_date' => date('Y-m-d', strtotime('20-10-2020'))];
         $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/date', $data);
-
+        
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
     }

@@ -19,19 +19,14 @@ class Product extends BaseProduct
     public function productTypes()
     {
         return [
-            'testTypes',
+            'sim',
         ];
     }
 
-    public function aboutSchema()
+    public function simSchema()
     {
-        return [];
-    }
-
-    public function testTypesSchema()
-    {
-         return [
-            'testField' => [
+        return [
+            'sim' => [
                 'type' => 'string',
                 'rule' => [],
             ],
