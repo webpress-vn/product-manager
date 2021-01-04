@@ -14,7 +14,9 @@ $factory->define(Product::class, function (Faker $faker) {
         'code'           => $faker->swiftBicNumber,
         'price'          => $faker->randomNumber(),
         'original_price' => $faker->randomNumber(),
-        'author_id'      => rand(1, 3),
+        'sold_quantity'  => 0,
+        'unit_price'     => 'đ',
+        'author_id'      => 1,
         'thumbnail'      => $faker->imageUrl(),
         'sku'            => Str::random(32),
         'order'          => 0
