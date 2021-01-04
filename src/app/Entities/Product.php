@@ -43,7 +43,6 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         'product_type',
         'sku',
         'order',
-        'product_type_serial_number',
     ];
 
     public function schema()
