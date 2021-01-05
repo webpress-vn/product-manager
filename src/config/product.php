@@ -17,21 +17,12 @@ return [
         'productDetail' => VCComponent\Laravel\Product\ViewModels\ProductDetail\ProductDetailViewModel::class,
     ],
     'auth_middleware' => [
-        'admin'    => [
-            // [
-            //     'middleware' => '',
-            //     'except'     => [],
-            // ],
-        ],
-        'frontend' => [
-            // [
-            //     'middleware' => '',
-            //     'except'     => [],
-            // ],
-        ],
+        'admin'    => [],
+        'frontend' => [],
     ],
     'cache'           => [
         'enabled' => false,
         'minutes' => 1,
     ],
+    'test_mode' => false
 ];

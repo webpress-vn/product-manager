@@ -12,6 +12,7 @@ use VCComponent\Laravel\Product\Providers\ProductRouteProvider;
 use VCComponent\Laravel\Product\Providers\ProductServiceProvider;
 use VCComponent\Laravel\Product\Transformers\ProductTransformer;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product as TestEntity;
+use VCComponent\Laravel\User\Providers\UserComponentProvider;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -27,6 +28,7 @@ abstract class TestCase extends OrchestraTestCase
         return [
             ProductServiceProvider::class,
             ProductRouteProvider::class,
+            UserComponentProvider::class,
             LaravelServiceProvider::class,
             ServiceProvider::class,
         ];
@@ -69,6 +71,7 @@ abstract class TestCase extends OrchestraTestCase
             'admin'    => [],
             'frontend' => [],
         ]);
+        $app['config']->set('product.test_mode', true);
         $app['config']->set('api', [
             'standardsTree'      => 'x',
             'subtype'            => '',
