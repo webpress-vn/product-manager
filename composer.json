@@ -24,7 +24,8 @@
         "webpress/view-model": "^0.0.6",
         "webpress/category-manager" : "^0.0.6",
         "webpress/tag-manager" : "^0.0.4",
-        "webpress/user-manager" : "^0.0.5"
+        "webpress/user-manager" : "^0.0.5",
+        "webpress/export-excel": "^0.0.2"
     },
     "require-dev": {
         "orchestra/testbench": "^5.0"
