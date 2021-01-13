@@ -62,7 +62,7 @@ class ProductListController extends Controller implements ViewProductListControl
         }
 
         $key = 'view' . ucwords($type);
-
+        
         if (method_exists($this, $key)) {
             return view($this->$key(), $data);
         } else {
