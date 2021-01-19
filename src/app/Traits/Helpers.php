@@ -129,10 +129,11 @@ trait Helpers
 
         return $query;
     }
-
+    
     private function getProductTypesFromRequest(Request $request)
     {
         $path_items  = collect(explode('/', $request->path()));
+
         $check_admin = $path_items->filter(function ($item) {
             return $item === 'admin';
         })->count();

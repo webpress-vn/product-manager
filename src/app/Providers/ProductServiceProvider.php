@@ -11,7 +11,6 @@ use VCComponent\Laravel\Product\Entities\Product as BaseModel;
 use VCComponent\Laravel\Product\Entities\Variant;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductDetailController as ViewProductDetailController;
 use VCComponent\Laravel\Product\Http\Controllers\Web\ProductListController as ViewProductListController;
-use VCComponent\Laravel\Product\Products\Contracts\Product as ContractsProduct;
 use VCComponent\Laravel\Product\Products\Product;
 use VCComponent\Laravel\Product\Repositories\AttributeRepository;
 use VCComponent\Laravel\Product\Repositories\AttributeRepositoryEloquent;
@@ -43,7 +42,6 @@ class ProductServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../../resources/views/', 'product-manager');
 
         $this->bootEntityName();
-
     }
 
     /**
@@ -63,8 +61,6 @@ class ProductServiceProvider extends ServiceProvider
         $this->app->singleton('moduleProduct.product', function () {
             return new Product();
         });
-
-        $this->app->bind(ContractsProduct::class, 'moduleProduct.product');
     }
 
     private function registerControllers()
@@ -88,13 +84,4 @@ class ProductServiceProvider extends ServiceProvider
             'variants'   => Variant::class,
         ]);
     }
-
-    public function provides()
-    {
-        return [
-            ContractsProduct::class,
-            'moduleProduct.product',
-        ];
-    }
-
 }
