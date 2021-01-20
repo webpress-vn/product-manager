@@ -25,17 +25,17 @@ $api->version('v1', function ($api) use ($productTypes) {
             $api->delete('products/trash/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@deleteTrash');
 
             $api->get('products/trash/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getAllTrash');
-           
+
             $api->get('products/trash', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@trash');
 
             $api->put('products/trash/bulk/restores', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkRestore');
-           
+
             $api->put('products/trash/{id}/restore', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@restore');
 
             $api->get('products/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@list');
 
             $api->put('products/status/bulk', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@bulkUpdateStatus');
-            
+
             $api->put('product/{id}/status', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@updateStatusItem');
 
             $api->resource('products', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController');
@@ -56,6 +56,8 @@ $api->version('v1', function ($api) use ($productTypes) {
             $api->put("/variant/{id}/status", "VCComponent\Laravel\Product\Http\Controllers\Api\Admin\VariantController@updateStatus");
 
             $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
+
+            $api->resource('schemas', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductSchemaController');
 
             if (count($productTypes)) {
                 foreach ($productTypes as $productType) {
