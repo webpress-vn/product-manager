@@ -4,9 +4,9 @@ namespace VCComponent\Laravel\Product\Repositories;
 
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
-use VCComponent\Laravel\Product\Entities\Schema;
+use VCComponent\Laravel\Product\Entities\ProductSchema;
 
-class SchemaRepositoryEloquent extends BaseRepository implements SchemaRepository
+class ProductSchemaRepositoryEloquent extends BaseRepository implements ProductSchemaRepository
 {
     /**
      * Specify Model class name
@@ -15,7 +15,7 @@ class SchemaRepositoryEloquent extends BaseRepository implements SchemaRepositor
      */
     public function model()
     {
-        return Schema::class;
+        return ProductSchema::class;
     }
 
     public function getEntity()

@@ -4,8 +4,9 @@ namespace VCComponent\Laravel\Product\Transformers;
 
 use League\Fractal\TransformerAbstract;
 
-class SchemaTransformer extends TransformerAbstract
+class ProductSchemaRuleTransformer extends TransformerAbstract
 {
+
     protected $availableIncludes = [
 
     ];
@@ -18,10 +19,12 @@ class SchemaTransformer extends TransformerAbstract
     public function transform($model)
     {
         return [
-            'id' => $model->id,
+            'id'   => $model->id,
             'name' => $model->name,
-            'type' => $model->type,
-            'rule' => $model->type,
+            'timestamps' => [
+                'created_at' => $model->created_at,
+                'updated_at' => $model->updated_at,
+            ],
         ];
     }
 }

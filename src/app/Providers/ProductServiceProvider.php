@@ -21,10 +21,14 @@ use VCComponent\Laravel\Product\Repositories\ProductAttributeRepository;
 use VCComponent\Laravel\Product\Repositories\ProductAttributeRepositoryEloquent;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Product\Repositories\ProductRepositoryEloquent;
-use VCComponent\Laravel\Product\Repositories\SchemaRepository;
-use VCComponent\Laravel\Product\Repositories\SchemaRepositoryEloquent;
 use VCComponent\Laravel\Product\Repositories\VariantRepository;
 use VCComponent\Laravel\Product\Repositories\VariantRepositoryEloquent;
+use VCComponent\Laravel\Product\Repositories\ProductSchemaRepository;
+use VCComponent\Laravel\Product\Repositories\ProductSchemaRepositoryEloquent;
+use VCComponent\Laravel\Product\Repositories\ProductSchemaRuleRepository;
+use VCComponent\Laravel\Product\Repositories\ProductSchemaRuleRepositoryEloquent;
+use VCComponent\Laravel\Product\Repositories\ProductSchemaTypeRepository;
+use VCComponent\Laravel\Product\Repositories\ProductSchemaTypeRepositoryEloquent;
 
 class ProductServiceProvider extends ServiceProvider
 {
@@ -59,12 +63,18 @@ class ProductServiceProvider extends ServiceProvider
         $this->app->bind(AttributeValueRepository::class, AttributeValueRepositoryEloquent::class);
         $this->app->bind(ProductAttributeRepository::class, ProductAttributeRepositoryEloquent::class);
         $this->app->bind(VariantRepository::class, VariantRepositoryEloquent::class);
-        $this->app->bind(SchemaRepository::class, SchemaRepositoryEloquent::class);
+        $this->app->bind(ProductSchemaRepository::class, ProductSchemaRepositoryEloquent::class);
+        $this->app->bind(ProductSchemaTypeRepository::class, ProductSchemaTypeRepositoryEloquent::class);
+        $this->app->bind(ProductSchemaRuleRepository::class, ProductSchemaRuleRepositoryEloquent::class);
         $this->registerControllers();
+
+        include __DIR__ . '/../../database/seeds/ProductSchemaRuleSeeder.php';
+        include __DIR__ . '/../../database/seeds/ProductSchemaTypeSeeder.php';
 
         $this->app->singleton('moduleProduct.product', function () {
             return new Product();
         });
+
     }
 
     private function registerControllers()
@@ -86,7 +96,7 @@ class ProductServiceProvider extends ServiceProvider
             'products'   => $this->model,
             'attributes' => Attribute::class,
             'variants'   => Variant::class,
-            'schema'     => Schema::class,
+            'schema'    => Schema::class,
         ]);
     }
 }

@@ -3,9 +3,9 @@
 namespace VCComponent\Laravel\Product\Http\Controllers\Api\Admin;
 
 use Illuminate\Http\Request;
-use VCComponent\Laravel\Product\Repositories\SchemaRepository;
-use VCComponent\Laravel\Product\Transformers\SchemaTransformer;
-use VCComponent\Laravel\Product\Validators\SchemaValidator;
+use VCComponent\Laravel\Product\Repositories\ProductSchemaRepository;
+use VCComponent\Laravel\Product\Transformers\ProductSchemaTransformer;
+use VCComponent\Laravel\Product\Validators\ProductSchemaValidator;
 
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 
@@ -14,12 +14,12 @@ class ProductSchemaController extends ApiController
     protected $repository;
     protected $validator;
 
-    public function __construct(SchemaRepository $repository, SchemaValidator $validator)
+    public function __construct(ProductSchemaRepository $repository, ProductSchemaValidator $validator)
     {
         $this->repository  = $repository;
         $this->entity      = $repository->getEntity();
         $this->validator   = $validator;
-        $this->transformer = SchemaTransformer::class;
+        $this->transformer = ProductSchemaTransformer::class;
 
         if (config('product.auth_middleware.admin.middleware') !== '') {
             $this->middleware(
@@ -59,7 +59,7 @@ class ProductSchemaController extends ApiController
             $transformer = new $this->transformer;
         }
 
-        return $this->response->paginator($schema, $transformer);
+        return $this->response->item($schema, $transformer);
     }
 
     public function store(Request $request)

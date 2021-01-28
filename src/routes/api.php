@@ -57,7 +57,17 @@ $api->version('v1', function ($api) use ($productTypes) {
 
             $api->get('productTypes', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getType');
 
+//            $api->get('schemas', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductSchemaController@index');
+//            $api->get('schema/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductSchemaController@show');
+//            $api->post('schema', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductSchemaController@store');
+//            $api->put('schema/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductSchemaController@update');
+//            $api->delete('schema/{id}', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductSchemaController@destroy');
+
             $api->resource('schemas', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductSchemaController');
+
+            $api->get('schema-types', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\SchemaTypeController@index');
+
+            $api->get('schema-rules', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\SchemaRuleController@index');
 
             if (count($productTypes)) {
                 foreach ($productTypes as $productType) {
