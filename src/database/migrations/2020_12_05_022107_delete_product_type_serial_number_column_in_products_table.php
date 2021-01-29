@@ -25,6 +25,8 @@ class DeleteProductTypeSerialNumberColumnInProductsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('products', function (Blueprint $table) {
+            $table->bigInteger('product_type_serial_number')->default(1);
+        });
     }
 }
