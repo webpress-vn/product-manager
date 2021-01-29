@@ -73,7 +73,12 @@ class ProductController extends ApiController
         $export = new export($args);
         $url = $export->export();
 
-        return $this->response->array(['url' => $url]);
+        
+        if (config('product.test_mode')) {
+            return $this->response->array(['data' => $products]);
+        } else{
+             return $this->response->array(['url' => $url]);
+        }
     }
 
     private function getReportProducts(Request $request)
@@ -86,7 +91,6 @@ class ProductController extends ApiController
             'products.product_type as `Loại sản phẩm`',
             'products.code as `Mã sản phẩm`',
             'products.thumbnail as `Link ảnh`',
-            'products.order as `Thứ tự sắp xếp`',
             'products.price as `Gía bán`',
             'products.unit_price as `Đơn vị tính`',
             'users.username as `Người tạo`',
@@ -106,14 +110,13 @@ class ProductController extends ApiController
 
         $query = $this->applyConstraintsFromRequest($query, $request);
         $query = $this->applySearchFromRequest($query, ['name', 'description', 'price'], $request, ['productMetas' => ['value']]);
-        // $query = $this->applyOrderByFromRequest($query, $request);
 
         $query = $query->leftJoin('users', function ($join) {
             $join->on('products.author_id', '=', 'users.id');
         });
 
 
-        $products = $query->get()->toArray();;
+        $products = $query->get()->toArray();
 
         return $products;
     }

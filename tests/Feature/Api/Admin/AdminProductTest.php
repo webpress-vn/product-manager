@@ -267,4 +267,28 @@ class AdminProductTest extends TestCase
             'data' => $getProductTypes,
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function can_export_product_by_admin_router()
+    {
+        $product = factory(Product::class)->create();
+
+        $data  = [$product];
+        $param = '?label=product&extension=xlsx';
+
+        $response = $this->call('GET', 'api/product-management/admin/products/exports' . $param);
+        $response->assertStatus(200);
+        $response->assertJsonCount(1, 'data');
+        $response->assertJson(['data' => [[
+            "Tên sản phẩm"    => $product->name,
+            "Số lượng"        => $product->quantity,
+            "Số lượng đã bán" => $product->sold_quantity,
+            "Mã sản phẩm"     => $product->code,
+            "Link ảnh"        => $product->thumbnail,
+            "Gía bán"         => $product->price,
+            "Đơn vị tính"     => $product->unit_price,
+        ]]]);
+    }
 }
