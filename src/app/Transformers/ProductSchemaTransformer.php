@@ -3,13 +3,16 @@
 namespace VCComponent\Laravel\Product\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use VCComponent\Laravel\Product\Entities\ProductSchemaType;
 use VCComponent\Laravel\Product\Entities\ProductSchemaRule;
+use VCComponent\Laravel\Product\Entities\ProductSchemaType;
+use VCComponent\Laravel\Product\Transformers\ProductSchemaRuleTransformer;
+use VCComponent\Laravel\Product\Transformers\ProductSchemaTypeTransformer;
 
 class ProductSchemaTransformer extends TransformerAbstract
 {
     protected $availableIncludes = [
-
+        'schemaRule',
+        'schemaType',
     ];
 
     public function __construct($includes = [])
@@ -19,19 +22,31 @@ class ProductSchemaTransformer extends TransformerAbstract
 
     public function transform($model)
     {
-        $nameType = ProductSchemaType::where('id', $model->schema_type_id)->get();
-        $nameRule = ProductSchemaRule::where('id', $model->schema_rule_id)->get();
         return [
-            'id'    => $model->id,
-            'name'  => $model->name,
-            'label' => $model->label,
-            'type'  => $nameType,
-            'rule'  => $nameRule,
-            'product_type' => $model->product_type,
-            'timestamps' => [
+            'id'             => $model->id,
+            'name'           => $model->name,
+            'label'          => $model->label,
+            'schema_type_id' => $model->schema_type_id,
+            'schema_rule_id' => $model->schema_rule_id,
+            'product_type'   => $model->product_type,
+            'timestamps'     => [
                 'created_at' => $model->created_at,
                 'updated_at' => $model->updated_at,
             ],
         ];
+    }
+
+    public function includeSchemaType($model)
+    {
+        if ($model->schemaType) {
+            return $this->item($model->schemaType, new ProductSchemaTypeTransformer());
+        }
+    }
+
+    public function includeSchemaRule($model)
+    {
+        if ($model->schemaRule) {
+            return $this->item($model->schemaType, new ProductSchemaRuleTransformer());
+        }
     }
 }
