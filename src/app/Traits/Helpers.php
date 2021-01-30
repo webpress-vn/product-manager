@@ -5,10 +5,8 @@ namespace VCComponent\Laravel\Product\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use VCComponent\Laravel\Product\Entities\AttributeValue;
-use VCComponent\Laravel\Product\Entities\ProductSchema;
+use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
-use VCComponent\Laravel\Product\Entities\ProductSchemaRule;
-use VCComponent\Laravel\Product\Entities\ProductSchemaType;
 use VCComponent\Laravel\Product\Entities\Variant;
 use VCComponent\Laravel\Product\Entities\VariantProduct;
 use VCComponent\Laravel\Product\Validators\VariantValidator;
@@ -26,27 +24,10 @@ trait Helpers
         $type = $this->getProductTypesFromRequest($request);
         $key  = ucwords($type) . 'Schema';
 
-        $fieldMeta = ProductSchema::all();
-        $meta = array();
-        foreach ($fieldMeta as $item) {
-            $metaType = substr(trim(trim(trim(ProductSchemaType::where('id', $item->schema_type_id)->select('name')->get(),"[]"), "{}"), '""'), 7);
-            $metaRule = substr(trim(trim(trim(ProductSchemaRule::where('id', $item->schema_rule_id)->select('name')->get(),"[]"), "{}"), '""'), 7);
-            array_push($meta, [ 'data' => [$item->name => [
-                    'type'  => $metaType,
-                    'label' => $item->label,
-                    'rule'  => $metaRule,
-                    'name'  => $item->name,
-                    'productType' => $item->product_type
-                ]
-                ]
-                ]
-            );
-        }
-
         if (method_exists($entity, $key)) {
-            $schema = collect($entity->$key());
+            $schema =  collect($entity->$key());
         } else {
-            $schema = collect(json(trim(json_encode($meta), '[]')));
+            $schema = collect($entity->schema());
         }
 
         $request_data_keys = $request_data->keys();
