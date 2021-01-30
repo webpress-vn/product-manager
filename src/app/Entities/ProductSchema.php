@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProductSchema extends Model
 {
     protected $fillable = [
+        'name',
         'label',
         'schema_type_id',
         'schema_rule_id',
