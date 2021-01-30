@@ -4,6 +4,7 @@ namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use VCComponent\Laravel\Product\Entities\Product;
+use VCComponent\Laravel\Product\Entities\ProductSchema;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product as TestEntity;
 use VCComponent\Laravel\Product\Test\TestCase;
 
@@ -13,7 +14,7 @@ class AdminProductTest extends TestCase
 
     /**
      * @test
-     */ 
+     */
     public function can_get_list_products_with_paginate_by_admin_router()
     {
         $number       = rand(1, 5);
@@ -129,14 +130,28 @@ class AdminProductTest extends TestCase
      */
     public function can_get_field_meta_product_by_admin()
     {
+        factory(ProductSchema::class)->create();
+
         $response = $this->json('GET', 'api/product-management/admin/products/field-meta');
         $response->assertStatus(200);
 
-        $entity          = new TestEntity;
-        $getEntitySchema = $entity->schema();
+        $schemas = ProductSchema::get()->map(function ($item) {
+            return [
+                'id'             => $item->id,
+                'name'           => $item->name,
+                'label'          => $item->label,
+                'schema_type_id' => $item->schema_type_id,
+                'schema_rule_id' => $item->schema_rule_id,
+                'product_type'   => $item->product_type,
+                'timestamps'     => [
+                    'created_at' => $item->created_at->toJSON(),
+                    'updated_at' => $item->updated_at->toJSON(),
+                ],
+            ];
+        })->toArray();
 
         $response->assertJson([
-            'data' => $getEntitySchema,
+            'data' => $schemas,
         ]);
     }
 
@@ -202,7 +217,7 @@ class AdminProductTest extends TestCase
 
         $data     = ['published_date' => date('Y-m-d', strtotime('20-10-2020'))];
         $response = $this->json('PUT', 'api/product-management/admin/product/' . $product['id'] . '/date', $data);
-        
+
         $response->assertStatus(200);
         $response->assertJson(['data' => $data]);
     }

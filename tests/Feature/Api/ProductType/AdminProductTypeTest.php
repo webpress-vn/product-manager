@@ -4,6 +4,7 @@ namespace VCComponent\Laravel\Product\Test\Feature\Api\Admin;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use VCComponent\Laravel\Product\Entities\Product;
+use VCComponent\Laravel\Product\Entities\ProductSchema;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product as Entity;
 use VCComponent\Laravel\Product\Test\TestCase;
 
@@ -16,12 +17,27 @@ class AdminProductTypeTest extends TestCase
      */
     public function can_get_field_meta_product_type_by_admin_router()
     {
-        $product = new Entity;
+        factory(ProductSchema::class)->create(['product_type' => 'sim']);
 
         $response = $this->call('GET', 'api/product-management/admin/sim/field-meta');
 
+        $schemas = ProductSchema::where('product_type', 'sim')->get()->map(function ($item) {
+            return [
+                'id'             => $item->id,
+                'name'           => $item->name,
+                'label'          => $item->label,
+                'schema_type_id' => $item->schema_type_id,
+                'schema_rule_id' => $item->schema_rule_id,
+                'product_type'   => $item->product_type,
+                'timestamps'     => [
+                    'created_at' => $item->created_at->toJSON(),
+                    'updated_at' => $item->updated_at->toJSON(),
+                ],
+            ];
+        })->toArray();
+
         $response->assertStatus(200);
-        $response->assertJson(['data' => $product->simSchema()]);
+        $response->assertJson(['data' => $schemas]);
     }
 
     /**
@@ -97,7 +113,7 @@ class AdminProductTypeTest extends TestCase
     {
         $products = factory(Product::class, 5)->state('sim')->create();
 
-        $products = $products->map(function($e) {
+        $products = $products->map(function ($e) {
             unset($e['updated_at']);
             unset($e['created_at']);
             return $e;
@@ -130,7 +146,7 @@ class AdminProductTypeTest extends TestCase
     {
         $products = factory(Product::class, 5)->state('sim')->create();
 
-        $products = $products->map(function($e) {
+        $products = $products->map(function ($e) {
             unset($e['updated_at']);
             unset($e['created_at']);
             return $e;
@@ -159,7 +175,7 @@ class AdminProductTypeTest extends TestCase
         }
     }
 
-      /**
+    /**
      * @test
      */
     public function can_delete_a_products_type_trash_by_admin()
@@ -169,20 +185,20 @@ class AdminProductTypeTest extends TestCase
         unset($product['updated_at']);
         unset($product['created_at']);
 
-        $response = $this->json('DELETE', 'api/product-management/admin/sim/trash/'.$product['id']);
+        $response = $this->json('DELETE', 'api/product-management/admin/sim/trash/' . $product['id']);
         $response->assertJson(['message' => 'Product not found']);
 
         $response = $this->call('DELETE', 'api/product-management/admin/sim/' . $product['id']);
 
         $this->assertSoftDeleted('products', $product);
 
-        $response = $this->json('DELETE', 'api/product-management/admin/sim/trash/'.$product['id']);
+        $response = $this->json('DELETE', 'api/product-management/admin/sim/trash/' . $product['id']);
         $response->assertJson(['success' => true]);
 
         $this->assertDeleted('products', $product);
     }
 
-     /**
+    /**
      * @test
      */
     public function can_get_trash_list_of_products_type_with_no_paginate_by_admin()
@@ -233,14 +249,14 @@ class AdminProductTypeTest extends TestCase
         $response->assertJson(['data' => [$product]]);
     }
 
-     /**
+    /**
      * @test
      */
     public function can_bulk_restore_products_type_by_admin_router()
     {
         $products = factory(Product::class, 5)->state('sim')->create();
 
-        $products = $products->map(function($e) {
+        $products = $products->map(function ($e) {
             unset($e['updated_at']);
             unset($e['created_at']);
             return $e;
@@ -270,7 +286,7 @@ class AdminProductTypeTest extends TestCase
         }
     }
 
-     /**
+    /**
      * @test
      */
     public function can_restore_a_product_type_by_admin_router()
@@ -316,19 +332,19 @@ class AdminProductTypeTest extends TestCase
         $response->assertJson(['data' => [$product]]);
     }
 
-     /**
+    /**
      * @test
      */
     public function can_bulk_update_status_products_type_by_admin()
     {
         $products = factory(Product::class, 5)->state('sim')->create();
 
-        $products = $products->map(function($e) {
+        $products = $products->map(function ($e) {
             unset($e['updated_at']);
             unset($e['created_at']);
             return $e;
         })->toArray();
-        
+
         $listIds = array_column($products, 'id');
         $data    = ['ids' => $listIds, 'status' => 5];
 
@@ -462,7 +478,7 @@ class AdminProductTypeTest extends TestCase
         $response->assertJsonCount(5, 'data');
     }
 
-     /**
+    /**
      * @test
      */
     public function can_change_published_date_a_product_type_by_admin()
@@ -476,7 +492,7 @@ class AdminProductTypeTest extends TestCase
         $response->assertJson(['data' => $data]);
     }
 
-     /**
+    /**
      * @test
      */
     public function can_check_stock_a_product_by_admin()
