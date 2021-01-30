@@ -45,4 +45,23 @@ class ProductSchemaTypeController extends ApiController
 
         return $this->response->paginator($schematypes, $transformer);
     }
+
+    public function list(Request $request)
+    {
+        $query = $this->entity;
+
+        $query = $this->applyConstraintsFromRequest($query, $request);
+        $query = $this->applySearchFromRequest($query, ['name'], $request);
+        $query = $this->applyOrderByFromRequest($query, $request);
+
+        $schematypes = $query->get();
+
+        if ($request->has('includes')) {
+            $transformer = new $this->transformer(explode(',', $request->get('includes')));
+        } else {
+            $transformer = new $this->transformer;
+        }
+
+        return $this->response->paginator($schematypes, $transformer);
+    }
 }

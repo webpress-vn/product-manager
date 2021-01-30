@@ -66,8 +66,10 @@ $api->version('v1', function ($api) use ($productTypes) {
             $api->resource('schemas', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductSchemaController');
 
             $api->get('schema-types', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\SchemaTypeController@index');
+            $api->get('schema-types/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\SchemaTypeController@list');
 
             $api->get('schema-rules', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\SchemaRuleController@index');
+            $api->get('schema-rules/all', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\SchemaRuleController@list');
 
             if (count($productTypes)) {
                 foreach ($productTypes as $productType) {
