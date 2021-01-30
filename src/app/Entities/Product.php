@@ -45,16 +45,6 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         'order',
     ];
 
-//    public function schema()
-//    {
-//        return [
-//            'alt_image' => [
-//                'type' => 'string',
-//                'rule' => [],
-//            ],
-//        ];
-//    }
-
     public function sluggable()
     {
         return [
