@@ -9,6 +9,7 @@ use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Entities\ProductAttribute;
 use VCComponent\Laravel\Product\Entities\Variant;
 use VCComponent\Laravel\Product\Entities\VariantProduct;
+use VCComponent\Laravel\Product\Facades\Schema as ProductSchemaFacade;
 use VCComponent\Laravel\Product\Validators\VariantValidator;
 
 trait Helpers
@@ -22,16 +23,9 @@ trait Helpers
         }
 
         $type = $this->getProductTypesFromRequest($request);
-        $key  = ucwords($type) . 'Schema';
-
-        if (method_exists($entity, $key)) {
-            $schema =  collect($entity->$key());
-        } else {
-            $schema = collect($entity->schema());
-        }
+        $schema_keys = ProductSchemaFacade::getKey($type)->toArray();
 
         $request_data_keys = $request_data->keys();
-        $schema_keys       = $schema->keys()->toArray();
 
         $default_keys = $request_data_keys->diff($schema_keys)->all();
 
