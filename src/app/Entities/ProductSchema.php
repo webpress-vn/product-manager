@@ -23,4 +23,9 @@ class ProductSchema extends Model
     {
         return $this->beLongsTo(ProductSchemaRule::class);
     }
+
+    public function scopeOfProductType($query, $product_type)
+    {
+        return $query->where('product_type', $product_type);
+    }
 }
