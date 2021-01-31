@@ -29,6 +29,7 @@ use VCComponent\Laravel\Product\Repositories\ProductSchemaTypeRepository;
 use VCComponent\Laravel\Product\Repositories\ProductSchemaTypeRepositoryEloquent;
 use VCComponent\Laravel\Product\Repositories\VariantRepository;
 use VCComponent\Laravel\Product\Repositories\VariantRepositoryEloquent;
+use VCComponent\Laravel\Product\Services\SchemaService;
 
 class ProductServiceProvider extends ServiceProvider
 {
@@ -72,6 +73,7 @@ class ProductServiceProvider extends ServiceProvider
             return new Product();
         });
 
+        $this->app->bind('vcc.product.schema', SchemaService::class);
     }
 
     private function registerControllers()
