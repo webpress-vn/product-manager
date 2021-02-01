@@ -6,21 +6,25 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use VCComponent\Laravel\Export\Services\Export\Export;
-use Illuminate\Support\Facades\DB;
+use VCComponent\Laravel\Product\Entities\ProductSchema;
+use VCComponent\Laravel\Product\Entities\ProductSchemaRule;
+use VCComponent\Laravel\Product\Entities\ProductSchemaType;
 use VCComponent\Laravel\Product\Events\ProductCreatedByAdminEvent;
 use VCComponent\Laravel\Product\Events\ProductDeletedEvent;
 use VCComponent\Laravel\Product\Events\ProductStockChangedByAdminEvent;
 use VCComponent\Laravel\Product\Events\ProductUpdatedByAdminEvent;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Product\Traits\Helpers;
+use VCComponent\Laravel\Product\Transformers\ProductSchemaTransformer;
 use VCComponent\Laravel\Product\Transformers\ProductTransformer;
 use VCComponent\Laravel\Product\Validators\ProductAttributeValidator;
 use VCComponent\Laravel\Product\Validators\ProductValidator;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
-use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
+use VCComponent\Laravel\Vicoders\Core\Exceptions\PermissionDeniedException;
 
 class ProductController extends ApiController
 {
@@ -67,17 +71,16 @@ class ProductController extends ApiController
 
         $args = [
             'data'      => $products,
-            'label'     =>  $request->label ? $data['label'] : 'products',
+            'label'     => $request->label ? $data['label'] : 'products',
             'extension' => $request->extension ? $data['extension'] : 'Xlsx',
         ];
         $export = new export($args);
-        $url = $export->export();
+        $url    = $export->export();
 
-        
         if (config('product.test_mode')) {
             return $this->response->array(['data' => $products]);
-        } else{
-             return $this->response->array(['url' => $url]);
+        } else {
+            return $this->response->array(['url' => $url]);
         }
     }
 
@@ -115,11 +118,11 @@ class ProductController extends ApiController
             $join->on('products.author_id', '=', 'users.id');
         });
 
-
         $products = $query->get()->toArray();
 
         return $products;
     }
+
     public function index(Request $request)
     {
         $query = $this->entity->with('productMetas');
@@ -146,6 +149,7 @@ class ProductController extends ApiController
 
         return $this->response->paginator($products, $transformer);
     }
+
     public function whereHasCategory($request, $query)
     {
         if ($request->category) {
@@ -155,8 +159,8 @@ class ProductController extends ApiController
         }
         return $query;
     }
-    function list(Request $request)
-    {   
+
+    function list(Request $request) {
         $query = $this->entity;
         $query = $this->applyQueryScope($query, 'product_type', $this->productType);
         $query = $this->getFromDate($request, $query);
@@ -178,7 +182,6 @@ class ProductController extends ApiController
         } else {
             $transformer = new $this->transformer;
         }
-        
 
         return $this->response->collection($products, $transformer);
     }
@@ -191,7 +194,7 @@ class ProductController extends ApiController
                 throw new PermissionDeniedException();
             }
         }
-        
+
         $query   = $this->entity;
         $product = $query->where('id', $id)->first();
 
@@ -237,7 +240,7 @@ class ProductController extends ApiController
         $this->validator->isValid($data['default'], 'RULE_ADMIN_CREATE');
         $this->validator->isSchemaValid($data['schema'], $schema_rules);
 
-        $data['default']['author_id']    = $user ? $user->id : $request->get(
+        $data['default']['author_id'] = $user ? $user->id : $request->get(
             'author_id'
         );
         $data['default']['product_type'] = $this->productType;
@@ -315,7 +318,7 @@ class ProductController extends ApiController
 
     public function destroy(Request $request, $id)
     {
-       
+
         if (!empty(config('product.auth_middleware.admin'))) {
             $user = $this->getAuthenticatedUser();
             if (!$this->entity->ableToDelete($user, $id)) {
@@ -327,7 +330,6 @@ class ProductController extends ApiController
         if (!$product) {
             throw new NotFoundException('Product');
         }
-
 
         $this->repository->delete($id);
         $this->deleteAttributes($id);
@@ -362,7 +364,7 @@ class ProductController extends ApiController
             }
         }
 
-        $product =  $this->repository->findWhere(['id' => $id])->first();
+        $product = $this->repository->findWhere(['id' => $id])->first();
 
         if (!$product) {
             throw new NotFoundException('Product');
@@ -599,7 +601,7 @@ class ProductController extends ApiController
     public function getAllTrash()
     {
         $trash = $this->entity->onlyTrashed();
-      
+
         $products = $trash->get();
 
         return $this->response->collection($products, new $this->transformer());
@@ -612,7 +614,7 @@ class ProductController extends ApiController
         if ($trash->first() === null) {
             $product = [];
         }
-        $trash = $this->applySearchFromRequest($trash, ['name', 'description', 'price'], $request);
+        $trash    = $this->applySearchFromRequest($trash, ['name', 'description', 'price'], $request);
         $per_page = $request->has('per_page') ? (int) $request->get('per_page') : 15;
         $product  = $trash->paginate($per_page);
 
@@ -627,7 +629,7 @@ class ProductController extends ApiController
         if (count($ids) > $products->get()->count()) {
             throw new NotFoundException('Product');
         }
-        $product =  $products->forceDelete();
+        $product = $products->forceDelete();
         return $this->success();
     }
 
@@ -659,7 +661,6 @@ class ProductController extends ApiController
         return $this->success();
     }
 
-
     public function forceDelete($id)
     {
 
@@ -680,15 +681,8 @@ class ProductController extends ApiController
     }
 
     public function getFieldMeta()
-    {   
-        $type = $this->productType;
-        $key  = ucwords($type) . 'Schema';
-        $fieldMeta = [];
-        if (method_exists($this->entity, $key)) {
-            $fieldMeta = $this->entity->$key();
-        } else if($type === 'products') {
-            $fieldMeta = $this->entity->schema();
-        }
-        return response()->json(['data' => $fieldMeta]);
+    {
+        $data = ProductSchema::get();
+        return $this->response->collection($data, new ProductSchemaTransformer());
     }
 }

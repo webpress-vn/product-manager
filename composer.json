@@ -20,15 +20,16 @@
     },
     "require": {
         "webpress/core": "^0.1",
-        "cviebrock/eloquent-sluggable": "^7.0",
-        "webpress/view-model": "^0.0.6",
-        "webpress/category-manager" : "^0.0.6",
-        "webpress/tag-manager" : "^0.0.4",
-        "webpress/user-manager" : "^0.0.5",
-        "webpress/export-excel": "^0.0.2"
+        "webpress/view-model": "^0.0",
+        "webpress/category-manager" : "^0.0",
+        "webpress/tag-manager" : "^0.0",
+        "webpress/user-manager" : "^0.0",
+        "webpress/export-excel": "^0.0",
+        "cviebrock/eloquent-sluggable": "7.0.1"
+
     },
     "require-dev": {
-        "orchestra/testbench": "^5.0"
+        "orchestra/testbench": "5.0.0"
     },
     "prefer-stable": true,
     "extra": {
