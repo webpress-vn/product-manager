@@ -25,9 +25,10 @@ class ProductTransformer extends TransformerAbstract
         'tags',
         'attributesValue',
         'variants',
+        'productMetas'
     ];
 
-    public function __construct($includes = ['productMetas'])
+    public function __construct($includes = [])
     {
         $this->setDefaultIncludes($includes);
     }
