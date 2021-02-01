@@ -13,7 +13,7 @@ use VCComponent\Laravel\Product\Entities\AttributeValue;
 use VCComponent\Laravel\Product\Transformers\ProductAttributeTransformer;
 use VCComponent\Laravel\Product\Transformers\VariantTransformer;
 use VCComponent\Laravel\Tag\Transformers\TagTransformer;
-
+use VCComponent\Laravel\Product\Transformers\ProductTransformer;
 class ProductTransformer extends TransformerAbstract
 {
     protected $availableIncludes = [
