@@ -27,7 +27,7 @@ class ProductTransformer extends TransformerAbstract
         'variants',
     ];
 
-    public function __construct($includes = [])
+    public function __construct($includes = ['productMetas'])
     {
         $this->setDefaultIncludes($includes);
     }
@@ -72,6 +72,11 @@ class ProductTransformer extends TransformerAbstract
     public function includeCategories($model)
     {
         return $this->collection($model->categories, new CategoryTransformer());
+    }
+
+    public function includeProductMetas($model)
+    {
+        return $this->collection($model->productMetas, new ProductMetaTransformer());
     }
 
     public function includeMedia($model)
