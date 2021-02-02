@@ -10,7 +10,9 @@ class ProductMetaTransformer extends TransformerAbstract
     public function transform($model)
     {
         return [
-            'id' => (int) $model->id,
+            'id'    => (int) $model->id,
+            'key'   => $model->key,
+            'value' => $model->value,
         ];
     }
 }
