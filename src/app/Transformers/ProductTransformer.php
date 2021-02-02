@@ -13,7 +13,7 @@ use VCComponent\Laravel\Product\Entities\AttributeValue;
 use VCComponent\Laravel\Product\Transformers\ProductAttributeTransformer;
 use VCComponent\Laravel\Product\Transformers\VariantTransformer;
 use VCComponent\Laravel\Tag\Transformers\TagTransformer;
-
+use VCComponent\Laravel\Product\Transformers\ProductMetaTransformer;
 class ProductTransformer extends TransformerAbstract
 {
     protected $availableIncludes = [
@@ -25,6 +25,7 @@ class ProductTransformer extends TransformerAbstract
         'tags',
         'attributesValue',
         'variants',
+        'productMetas'
     ];
 
     public function __construct($includes = [])
@@ -71,6 +72,11 @@ class ProductTransformer extends TransformerAbstract
     public function includeCategories($model)
     {
         return $this->collection($model->categories, new CategoryTransformer());
+    }
+
+    public function includeProductMetas($model)
+    {
+        return $this->collection($model->productMetas, new ProductMetaTransformer());
     }
 
     public function includeMedia($model)
