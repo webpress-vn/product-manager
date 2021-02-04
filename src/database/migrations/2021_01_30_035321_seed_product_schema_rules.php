@@ -41,6 +41,6 @@ class SeedProductSchemaRules extends Migration
      */
     public function down()
     {
-        DB::table('product_schema_types')->truncate();
+
     }
 }
