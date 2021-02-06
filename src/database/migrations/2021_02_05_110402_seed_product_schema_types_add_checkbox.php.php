@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use VCComponent\Laravel\Product\Entities\ProductSchemaType;
 
-class SeedProductSchemaTypes extends Migration
+class SeedProductSchemaTypesAddCheckbox extends Migration
 {
     /**
      * Run the migrations.
