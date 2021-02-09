@@ -685,4 +685,10 @@ class ProductController extends ApiController
         $data = ProductSchema::get();
         return $this->response->collection($data, new ProductSchemaTransformer());
     }
+
+    public function getConfigProduct()
+    {
+        $data = config('product.config_product');
+        return response()->json($data);
+    }
 }

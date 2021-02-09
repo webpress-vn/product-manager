@@ -24,5 +24,10 @@ return [
         'enabled' => false,
         'minutes' => 1,
     ],
-    'test_mode' => false
+    'test_mode' => false,
+
+    'config_product'  => [
+        'attribute_product' => false,
+        'combo_product'     => false,
+    ],
 ];

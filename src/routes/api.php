@@ -109,5 +109,7 @@ $api->version('v1', function ($api) use ($productTypes) {
                 $api->resource($productType . '', 'VCComponent\Laravel\Product\Http\Controllers\Api\Frontend\ProductController');
             }
         }
+
+        $api->get('get-config-product', 'VCComponent\Laravel\Product\Http\Controllers\Api\Admin\ProductController@getConfigProduct');
     });
 });
