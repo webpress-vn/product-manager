@@ -38,7 +38,9 @@ trait Helpers
             $data['default']['original_price'] = $data['default']['price'];
         }
 
-        if ($request['name']) {
+        if ($request['slug']) {
+            $data['default']['slug'] = Str::slug($request['slug']);
+        } else {
             $data['default']['slug'] = Str::slug($request['name']);
         }
 
