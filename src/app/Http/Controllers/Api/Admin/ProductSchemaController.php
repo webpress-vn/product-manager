@@ -81,7 +81,7 @@ class ProductSchemaController extends ApiController
         $data = $request->all();
         $schema = $this->repository->update($data, $id);
 
-        ProductMeta::where('key', $schema_updating->name)->with('languages')->update(['key' => $request->name]);
+        ProductMeta::where('key', $schema_updating->name)->update(['key' => $request->name]);
 
         return $this->response->item($schema, new $this->transformer);
     }
@@ -89,7 +89,7 @@ class ProductSchemaController extends ApiController
     public function destroy($id)
     {
         $schema = $this->repository->findById($id);
-        ProductMeta::where('key', $schema->name)->with('languages')->delete();
+        ProductMeta::where('key', $schema->name)->delete();
         $schema->delete();
 
         return $this->success();
