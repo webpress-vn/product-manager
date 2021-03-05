@@ -13,6 +13,10 @@ class ProductMetaTransformer extends TransformerAbstract
             'id'    => (int) $model->id,
             'key'   => $model->key,
             'value' => $model->value,
+            'timestamps' => [
+                'created_at' => $model->created_at,
+                'updated_at' => $model->updated_at,
+            ],
         ];
     }
 }
