@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use VCComponent\Laravel\Product\Repositories\ProductSchemaRepository;
 use VCComponent\Laravel\Product\Transformers\ProductSchemaTransformer;
 use VCComponent\Laravel\Product\Validators\ProductSchemaValidator;
-
+use VCComponent\Laravel\Product\Entities\ProductMeta;
 use VCComponent\Laravel\Vicoders\Core\Controllers\ApiController;
 
 class ProductSchemaController extends ApiController
@@ -37,7 +37,7 @@ class ProductSchemaController extends ApiController
         $query = $this->applySearchFromRequest($query, ['name'], $request);
         $query = $this->applyOrderByFromRequest($query, $request);
 
-        $per_page   = $request->has('per_page') ? (int) $request->get('per_page') : 15;
+        $per_page   = $request->has('per_page') ? (int) $request->get('per_page') : 20;
         $schemas = $query->paginate($per_page);
 
         if ($request->has('includes')) {
@@ -76,11 +76,12 @@ class ProductSchemaController extends ApiController
     {
         $this->validator->isValid($request, 'RULE_ADMIN_UPDATE');
 
-        $this->repository->findById($id);
+        $schema_updating = $this->repository->findById($id);
 
         $data = $request->all();
-
         $schema = $this->repository->update($data, $id);
+
+        ProductMeta::where('key', $schema_updating->name)->update(['key' => $request->name]);
 
         return $this->response->item($schema, new $this->transformer);
     }
@@ -88,7 +89,7 @@ class ProductSchemaController extends ApiController
     public function destroy($id)
     {
         $schema = $this->repository->findById($id);
-
+        ProductMeta::where('key', $schema->name)->delete();
         $schema->delete();
 
         return $this->success();
