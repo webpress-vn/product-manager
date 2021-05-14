@@ -5,15 +5,14 @@ steps:
   - name: trigger
     image: plugins/downstream
     settings:
-      server: https://drone.vicoders.com
+      server: https://github.drone.vicoders.com
       token:
-        from_secret: DRONE_VICODERS_COM_SECRET
+        from_secret: DRONE_SERVER_SECRET
       params:
-      - PACKAGE_NAME=webpress/product-manager
-      - PACKAGE_VERSION=${DRONE_TAG}
+        - PACKAGE_NAME=webpress/product-manager
+        - PACKAGE_VERSION=${DRONE_TAG}
       repositories:
-        - vicoders-shared/laravel_core_theme_banhang
-
+        - webpress-vn/drone-downstream
 trigger:
   ref:
     - refs/tags/*
