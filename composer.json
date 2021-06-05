@@ -21,7 +21,7 @@
     "require": {
         "webpress/core": "^0.1",
         "webpress/view-model": "^0.0",
-        "webpress/category-manager" : "^0.0",
+        "webpress/category-manager" : "^0.1",
         "webpress/tag-manager" : "^0.0",
         "webpress/user-manager" : "^0.0",
         "webpress/export-excel": "^0.0",
