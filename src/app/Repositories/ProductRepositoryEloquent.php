@@ -215,9 +215,18 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
     public function findProductByField($field, $value) {
         return $this->getEntity()->where($field, '=', $value)->get();
     }
-    public function findByWhere(array $where) {
+    public function findByWhere(array $where, $number = 10, $order_by = 'order', $order = 'asc') {
 
-        return $this->getEntity()->where($where)->get();
+        $query = $this->getEntity()->where($where)->orderBy($order_by,$order);
+        if($number > 0) {
+            return $query->limit($number)->get();
+        }
+        return $query->get();
+
+    }
+    public function findByWherePaginate(array $where, $number = 10, $order_by = 'order', $order = 'asc') {
+
+        return $this->getEntity()->where($where)->orderBy($order_by,$order)->paginate($number);
 
     }
     public function getProductByID($product_id) {
