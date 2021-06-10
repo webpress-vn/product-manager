@@ -32,7 +32,6 @@ class SchemaServiceTest extends TestCase
 
         $service = new SchemaService();
         $data    = $service->getKey('products');
-
         $this->assertEquals($data[0], 'phone');
     }
 }

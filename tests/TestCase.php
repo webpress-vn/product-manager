@@ -13,6 +13,9 @@ use VCComponent\Laravel\Product\Providers\ProductServiceProvider;
 use VCComponent\Laravel\Product\Transformers\ProductTransformer;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product as TestEntity;
 use VCComponent\Laravel\User\Providers\UserComponentProvider;
+use VCComponent\Laravel\Category\Providers\CategoryServiceProvider;
+
+use VCComponent\Laravel\Category\Entities\Category;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -31,6 +34,7 @@ abstract class TestCase extends OrchestraTestCase
             UserComponentProvider::class,
             LaravelServiceProvider::class,
             ServiceProvider::class,
+            CategoryServiceProvider::class,
         ];
     }
 
@@ -67,6 +71,7 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('product.transformers', [
             'product' => ProductTransformer::class,
         ]);
+
         $app['config']->set('product.auth_middleware', [
             'admin'    => [],
             'frontend' => [],
