@@ -10,6 +10,7 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Repositories\ProductRepository;
 use VCComponent\Laravel\Vicoders\Core\Exceptions\NotFoundException;
+use VCComponent\Laravel\Category\Entities\Categoryable;
 
 /**
  * Class ProductRepositoryEloquent.
@@ -116,7 +117,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
         $products = $this->model->whereIn("id", $ids)->restore();
     }
-    
+
     public function deleteTrash($id)
     {
         $product = $this->model->where("id", $id)->forceDelete();
@@ -133,4 +134,108 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
         $products = $this->model->whereIn('id', $ids)->forceDelete();
     }
+
+     public function getRelatedProducts($product_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc') {
+         $categories = Categoryable::where('categoryable_id',$product_id)->where('categoryable_type','products')->first();
+         $query = Categoryable::where('category_id',$categories->category_id)
+        ->join('products', 'categoryable_id', '=', 'products.id')->select('products.*')
+            ->where('categoryable_type','products')
+            ->where('products.id','<>',$product_id)
+            ->where($where)
+            ->orderBy($order_by,$order);
+
+        if($number > 0) {
+            return $query->limit($number)->get();
+        }
+        return $query->get();
+
+    }
+    public function getRelatedProductsPaginate($product_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc') {
+         $categories = Categoryable::where('categoryable_id',$product_id)->where('categoryable_type','products')->first();
+         $query = Categoryable::where('category_id',$categories->category_id)
+        ->join('products', 'categoryable_id', '=', 'products.id')->select('products.*')
+            ->where('categoryable_type','products')
+            ->where('products.id','<>',$product_id)
+            ->where($where)
+            ->orderBy($order_by,$order);
+            return $query->paginate($number);
+
+    }
+
+    public function getProductsWithCategory($category_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*']) {
+        $query = $this->getEntity()->where($where)
+            ->orderBy($order_by,$order);
+            $query = $query->whereHas('categories', function ($q) use ($category_id) {
+                $q->where('categories.id', $category_id); });
+        if($number > 0) {
+            return $query->limit($number)->get($columns);
+        }
+        return $query->get($columns);
+    }
+    public function getProductsWithCategoryPaginate($category_id, array $where = [], $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*']) {
+        $query = $this->getEntity()->select($columns)
+            ->where($where)
+            ->orderBy($order_by,$order);
+            $query = $query->whereHas('categories', function ($q) use ($category_id) {
+                $q->where('categories.id', $category_id); });
+        return $query->paginate($number);
+    }
+
+    public function getSearchResult($key_word, array $list_field = ['name'],array $where = [], $category_id = 0,$number = 10,$order_by = 'order', $order = 'asc', $columns = ['*']) {
+        $query = $this->getEntity()->where(function($q) use($list_field , $key_word) {
+            foreach ($list_field  as $field)
+                $q->orWhere($field, 'like', "%{$key_word}%");
+        });
+        $query->where($where)
+            ->orderBy($order_by,$order);
+            if ($category_id > 0) {
+                $query = $query->whereHas('categories', function ($q) use ($category_id) {
+                    $q->where('categories.id', $category_id); });
+            }
+
+        if($number > 0) {
+            return $query->limit($number)->get($columns);
+        }
+        return $query->get($columns);
+    }
+    public function getSearchResultPaginate($key_word, array $list_field  = ['name'], array $where = [], $category_id = 0, $number = 10, $order_by = 'order', $order = 'asc', $columns = ['*']) {
+        $query = $this->getEntity()->where(function($q) use($list_field , $key_word) {
+            foreach ($list_field  as $field)
+                $q->orWhere($field, 'like', "%{$key_word}%");
+        });
+        $query->select($columns)->where($where)
+            ->orderBy($order_by,$order);
+            if ($category_id > 0) {
+                $query = $query->whereHas('categories', function ($q) use ($category_id) {
+                    $q->where('categories.id', $category_id); });
+            }
+        return $query->paginate($number);
+
+    }
+    public function findProductByField($field, $value) {
+        return $this->getEntity()->where($field, '=', $value)->get();
+    }
+    public function findByWhere(array $where) {
+
+        return $this->getEntity()->where($where)->get();
+
+    }
+    public function getProductByID($product_id) {
+        return $this->getEntity()->find($product_id);
+    }
+    public function getProductMedias( $product_id, $image_dimension='') {
+        $product = $this->getEntity()->where('id', $product_id)->first();
+        $images=[];
+        $count = 0;
+        foreach ($product->getMedia() as $item) {
+            $images[$count] = $item->getUrl($image_dimension);
+            $count++;
+        }
+        return $images;
+    }
+    public function getProductUrl($product_id){
+        $product = $this->getEntity()->find($product_id);
+        return '/products' .'/'.$product->slug;
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace VCComponent\Laravel\Product\Test\Stubs\Models;
 
+use VCComponent\Laravel\Category\Entities\Category;
 use VCComponent\Laravel\Product\Entities\Product as BaseProduct;
 
 class Product extends BaseProduct
@@ -31,5 +32,9 @@ class Product extends BaseProduct
                 'rule' => [],
             ],
         ];
+    }
+    public function categories()
+    {
+        return $this->morphToMany(Category::class, 'categoryable');
     }
 }
