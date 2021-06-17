@@ -52,6 +52,18 @@ class ProductReponsitoryTest extends TestCase
         $this->assertSame('a', $repository->findByWhere(['name'=>'a'])[0]->name);
     }
 
+    /**
+     * @test
+     */
+
+    public function can_find_by_where_paginate()
+    {
+        $repository = App::make(ProductRepository::class);
+        factory(Product::class)->create(['name'=>'a']);
+        factory(Product::class)->create(['name'=>'b']);
+        $this->assertSame('a', $repository->findByWherePaginate(['name'=>'a'])[0]->name);
+    }
+
 
     /**
      * @test

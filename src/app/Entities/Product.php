@@ -16,6 +16,7 @@ use VCComponent\Laravel\Product\Traits\ProductManagementTrait;
 use VCComponent\Laravel\Product\Traits\ProductSchemaTrait;
 use VCComponent\Laravel\Tag\Traits\HasTagsTraits;
 
+
 class Product extends Model implements Transformable, ProductSchema, ProductManagement
 {
     use TransformableTrait, ProductSchemaTrait, ProductManagementTrait, Sluggable, SluggableScopeHelpers, HasTagsTraits, SoftDeletes;

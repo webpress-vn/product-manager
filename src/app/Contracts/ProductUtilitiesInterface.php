@@ -25,6 +25,6 @@ interface ProductUtilitiesInterface
     public function getUpdatedAt();
     public function getProductType();
 
-    public function __get($fields);
+    public function getFields($fields);
 
 }

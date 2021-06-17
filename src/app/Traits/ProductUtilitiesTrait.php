@@ -67,7 +67,7 @@ trait ProductUtilitiesTrait
 
 
     // get any field by product
-    public function __get($field)
+    public function getFields($field)
     {
         if($this->getAttribute($field))
             return $this->getAttribute($field);

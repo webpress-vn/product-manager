@@ -165,7 +165,10 @@ public function findProductByField($field, $value)
 ```
 Find products by condition array
 ```php
-public function findByWhere(array $where);
+public function findByWhere(array $where, $number = 10, $order_by = 'order', $order = 'asc');
+
+public function findByWherePaginate(array $where, $number = 10, $order_by = 'order', $order = 'asc')
+// Find products by condition array withPaginate
 ```
 Get product by id
 ```php
@@ -218,6 +221,9 @@ $product = $this->productRepo->findProductByField('name','product hot');
 
 $productWhere = $this->productRepo->findByWhere(['name'=>'product hot','status'=>1]);
 // get a product named hot product and status = 1
+
+$productWhere = $this->productRepo->findByWherePaginate(['name'=>'product hot','status'=>1]);
+// get a product named hot product and status = 1 with paginate
 
 $productById = $this->productRepo->getProductByID(1);
 // get product with id = 1
