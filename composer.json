@@ -19,12 +19,12 @@
         }
     },
     "require": {
-        "webpress/core": "^1.4",
-        "webpress/view-model": "^1.4",
-        "webpress/category-manager" : "^1.4",
-        "webpress/tag-manager" : "^1.4",
-        "webpress/user-manager" : "^1.4",
-        "webpress/export-excel": "^1.4",
+        "webpress/core": "^2.1",
+        "webpress/view-model": "^2.1",
+        "webpress/category-manager" : "^2.1",
+        "webpress/tag-manager" : "^2.1",
+        "webpress/user-manager" : "^2.1",
+        "webpress/export-excel": "^2.1",
         "cviebrock/eloquent-sluggable": "7.0.1"
 
     },
