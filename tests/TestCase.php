@@ -7,15 +7,14 @@ use Dingo\Api\Http\Response\Format\Json;
 use Dingo\Api\Provider\LaravelServiceProvider;
 use Dingo\Api\Transformer\Adapter\Fractal;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use VCComponent\Laravel\Category\Providers\CategoryServiceProvider;
 use VCComponent\Laravel\Product\Entities\Product;
 use VCComponent\Laravel\Product\Providers\ProductRouteProvider;
 use VCComponent\Laravel\Product\Providers\ProductServiceProvider;
-use VCComponent\Laravel\Product\Transformers\ProductTransformer;
 use VCComponent\Laravel\Product\Test\Stubs\Models\Product as TestEntity;
+use VCComponent\Laravel\Product\Transformers\ProductTransformer;
+use VCComponent\Laravel\Tag\Providers\TagServiceProvider;
 use VCComponent\Laravel\User\Providers\UserComponentProvider;
-use VCComponent\Laravel\Category\Providers\CategoryServiceProvider;
-
-use VCComponent\Laravel\Category\Entities\Category;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -35,6 +34,7 @@ abstract class TestCase extends OrchestraTestCase
             LaravelServiceProvider::class,
             ServiceProvider::class,
             CategoryServiceProvider::class,
+            TagServiceProvider::class,
         ];
     }
 
@@ -60,9 +60,9 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('app.key', 'base64:TEQ1o2POo+3dUuWXamjwGSBx/fsso+viCCg9iFaXNUA=');
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
-            'driver'   => 'sqlite',
+            'driver' => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
+            'prefix' => '',
         ]);
         $app['config']->set('product.namespace', 'product-management');
         $app['config']->set('product.models', [
@@ -73,43 +73,43 @@ abstract class TestCase extends OrchestraTestCase
         ]);
 
         $app['config']->set('product.auth_middleware', [
-            'admin'    => [],
+            'admin' => [],
             'frontend' => [],
         ]);
         $app['config']->set('product.test_mode', true);
         $app['config']->set('api', [
-            'standardsTree'      => 'x',
-            'subtype'            => '',
-            'version'            => 'v1',
-            'prefix'             => 'api',
-            'domain'             => null,
-            'name'               => null,
+            'standardsTree' => 'x',
+            'subtype' => '',
+            'version' => 'v1',
+            'prefix' => 'api',
+            'domain' => null,
+            'name' => null,
             'conditionalRequest' => true,
-            'strict'             => false,
-            'debug'              => true,
-            'errorFormat'        => [
-                'message'     => ':message',
-                'errors'      => ':errors',
-                'code'        => ':code',
+            'strict' => false,
+            'debug' => true,
+            'errorFormat' => [
+                'message' => ':message',
+                'errors' => ':errors',
+                'code' => ':code',
                 'status_code' => ':status_code',
-                'debug'       => ':debug',
+                'debug' => ':debug',
             ],
-            'middleware'         => [
+            'middleware' => [
             ],
-            'auth'               => [
+            'auth' => [
             ],
-            'throttling'         => [
+            'throttling' => [
             ],
-            'transformer'        => Fractal::class,
-            'defaultFormat'      => 'json',
-            'formats'            => [
+            'transformer' => Fractal::class,
+            'defaultFormat' => 'json',
+            'formats' => [
                 'json' => Json::class,
             ],
-            'formatsOptions'     => [
+            'formatsOptions' => [
                 'json' => [
                     'pretty_print' => false,
                     'indent_style' => 'space',
-                    'indent_size'  => 2,
+                    'indent_size' => 2,
                 ],
             ],
         ]);
