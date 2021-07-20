@@ -54,6 +54,7 @@ class ProductTransformer extends TransformerAbstract
             'published_date' => $model->published_date,
             'sku'            => $model->sku,
             'order'          => $model->order,
+            'sale_status'    => $model->sale_status
         ];
 
         if ($model->productMetas->count()) {
