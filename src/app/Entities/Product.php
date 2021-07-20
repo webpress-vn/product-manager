@@ -44,7 +44,8 @@ class Product extends Model implements Transformable, ProductSchema, ProductMana
         'product_type',
         'sku',
         'order',
-        'slug'
+        'slug',
+        'sale_status'
     ];
 
     public function sluggable()
